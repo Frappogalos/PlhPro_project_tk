@@ -36,7 +36,7 @@ class Car:
 	@classmethod
 	def car_creator(cls, car_images, car_st_pos, speed, canvas, root):
 		if len(Car.cars_list) < Car.cars_limit:
-			rand_num = random.randint(1, 200)
+			rand_num = random.randint(1, 100)
 			if rand_num <= 15:
 				direction = 1
 			elif rand_num <= 50:
@@ -45,6 +45,7 @@ class Car:
 				direction = 3
 			else:
 				direction = 4
-			lane = random.choice([1, 2])
-			Car(pos=car_st_pos, image=car_images, speed=speed, direction=direction, lane=lane, canvas=canvas, window=root)
+			lane = random.choice([0, 1])
+			Car(pos=car_st_pos, image=car_images["3"][lane], speed=speed, direction=direction, lane=lane, canvas=canvas,
+				window=root)
 		root.after(4000, functools.partial(Car.car_creator, car_images, car_st_pos, speed, canvas, root))
