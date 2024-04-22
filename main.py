@@ -27,7 +27,7 @@ back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 PauseButton(x=1000, y=50, image=pause_img, window=root)
 OpButton(x=1100, y=50, images=(on_off_green, on_off_red), window=root)
 car_image_1 = ImageTk.PhotoImage(Image.open('images/cars/car_01.png'))
-Car((-40, 365), car_image_1, speed=(2, 0), canvas=canvas, window=root)
+Car.car_creator(car_images=car_image_1, car_st_pos=(-40, 365), speed=(6, 0), canvas=canvas, root=root)
 
 
 root.mainloop()
