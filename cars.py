@@ -46,6 +46,6 @@ class Car:
 			else:
 				direction = 4
 			lane = random.choice([0, 1])
-			Car(pos=car_st_pos, image=car_images["3"][lane], speed=speed, direction=direction, lane=lane, canvas=canvas,
+			Car(pos=car_st_pos, image=car_images[str(direction)][lane], speed=speed, direction=direction, lane=lane, canvas=canvas,
 				window=root)
 		root.after(4000, functools.partial(Car.car_creator, car_images, car_st_pos, speed, canvas, root))

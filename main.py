@@ -24,8 +24,8 @@ pause_img = ImageTk.PhotoImage(Image.open(PAUSE_IMAGE))
 on_off_red = ImageTk.PhotoImage(Image.open(ON_OFF_RED))
 on_off_green = ImageTk.PhotoImage(Image.open(ON_OFF_GRN))
 for i in range(0, 4):
-    CAR_IMAGES_DICT[str(i+1)] = [ImageTk.PhotoImage(Image.open(CAR_IMAGE_1).rotate(90*i)),
-                                 ImageTk.PhotoImage(Image.open(CAR_IMAGE_2).rotate(90*i))]
+    CAR_IMAGES_DICT[str(i+1)] = [ImageTk.PhotoImage(Image.open(CAR_IMAGE_1).rotate(90*i, expand=True)),
+                                 ImageTk.PhotoImage(Image.open(CAR_IMAGE_2).rotate(90*i, expand=True))]
 root.geometry(f"{bg.width()}x{bg.height()}")
 canvas = tk.Canvas(root, width=bg.width(), height=bg.height())
 canvas.pack(fill="both", expand=True)
