@@ -79,11 +79,11 @@ class Car:
     def car_creator(cls, car_images, canvas, root):
         if len(Car.cars_list) < Car.cars_limit:
             rand_num = random.randint(1, 100)
-            if rand_num <= 15:
+            if rand_num <= 35:
                 direction = 1
             elif rand_num <= 50:
                 direction = 2
-            elif rand_num <= 65:
+            elif rand_num <= 85:
                 direction = 3
             else:
                 direction = 4
