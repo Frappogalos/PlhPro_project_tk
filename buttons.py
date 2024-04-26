@@ -2,6 +2,7 @@ import tkinter as tk
 
 
 class OpButton:
+	"""Κλάση για τη δημιουργία κουμπιού λειτουργίας των φαναριών της προσομοίωσης"""
 	def __init__(self, x, y, images, window):
 		self.posx = x
 		self.posy = y
@@ -12,6 +13,7 @@ class OpButton:
 		self.button.place(x=self.posx, y=self.posy)
 
 	def btn_click(self):
+		"""Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
 		if self.operation:
 			self.button.config(image=self.off_image)
 			self.operation = False
@@ -20,7 +22,8 @@ class OpButton:
 			self.operation = True
 
 
-class PauseButton():
+class PauseButton:
+	"""Κλάση για τη δημιουργία κουμπιού παύσης της προσομοίωσης"""
 	def __init__(self, x, y, image, window):
 		self.posx = x
 		self.posy = y
@@ -30,6 +33,7 @@ class PauseButton():
 		self.button.place(x=self.posx, y=self.posy)
 
 	def btn_click(self):
+		"""Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
 		if self.operation:
 			self.operation = False
 		else:
