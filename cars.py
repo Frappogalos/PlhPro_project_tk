@@ -1,6 +1,8 @@
+import math
 import tkinter as tk
 import functools
 import random
+import math
 # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
 CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(830, 950), (890, 950)],
                            "3": [(1640, 365), (1640, 420)], "4": [(710, -40), (770, -40)]}
@@ -11,10 +13,11 @@ class Car:
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
     cars_limit = 10
     # Λίστα με τα ενεργά αυτοκίνητα
-    cars_list = []
+    cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []], "4": [[], []]}
+    total_car_list = []
 
     def __init__(self, image, direction, lane, canvas, window):
-        """Συνάρτηση που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
+        """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
         self.image = image
         self.direction = direction
         self.lane = lane
@@ -25,12 +28,16 @@ class Car:
         self.y = CARS_STARTING_POSITIONS[str(self.direction)][self.lane][1]
         self.root = window
         self.canvas = canvas
-        self.car = self.canvas.create_image(self.x, self.y, image=self.image)
-        Car.cars_list.append(self)
-        self.move_car()
+        if not self.spawn_collision():
+            self.car = self.canvas.create_image(self.x, self.y, image=self.image)
+            Car.cars_dict[str(self.direction)][self.lane].append(self)
+            Car.total_car_list.append(self)
+            self.move_car()
+        else:
+            self.delete_car()
 
     def find_speed(self):
-        """Συνάρτηση όπου ανάλογα με την κατεύθυνση του αυτοκινήτου επιστρέφει την ανάλογη ταχύτητα"""
+        """Μέθοδος όπου ανάλογα με την κατεύθυνση του αυτοκινήτου επιστρέφει την ανάλογη ταχύτητα"""
         if self.direction == 1:
             return 6, 0
         elif self.direction == 2:
@@ -41,11 +48,11 @@ class Car:
             return 0, 6
 
     def move_car(self):
-        """Συνάρτηση όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
+        """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
         if self.moving:
             # Εφόσον το αυτοκίνητο κινείται ελέγχει την απόσταση από το προπορευόμενο αυτοκίνητο
             # και αν αυτή είναι κάτω από την οριζόμενη τιμή ακινητοποιείται
-            for car in Car.cars_list:
+            for car in Car.cars_dict[str(self.direction)][self.lane]:
                 if self != car and self.direction == car.direction and self.lane == car.lane:
                     if self.direction == 1 and car.x - self.x < 120:
                         self.moving = False
@@ -92,15 +99,25 @@ class Car:
                 self.root.after(500, self.move_car)
 
     def delete_car(self):
-        """Συνάρτηση η οποία διαγράφει το αυτοκίνητο εφόσον εξέλθει των ορίων του καμβά"""
+        """Μέθοδος η οποία διαγράφει το αυτοκίνητο εφόσον εξέλθει των ορίων του καμβά"""
         self.canvas.delete(self.car)
-        Car.cars_list.remove(self)
+        Car.cars_dict[str(self.direction)][self.lane].remove(self)
+        Car.total_car_list.remove(self)
+
+    def spawn_collision(self):
+        """Μέθοδος η οποία ελέγχει αν το αυτοκίνητο που θα δημιουργηθεί θα συγκρουσθεί με ήδη
+        υπάρχον αυτοκίνητο"""
+        for car in Car.cars_dict[str(self.direction)][self.lane]:
+            if math.sqrt(abs(self.x - car.x)**2 + abs(self.y - car.y)**2) < 81:
+                return True
+        return False
+
 
     @classmethod
     def car_creator(cls, car_images, canvas, root):
-        """Συνάρτηση η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το τέλος ενός
-        συγκεκριμένου χρονικού διαστήματος"""
-        if len(Car.cars_list) < Car.cars_limit:
+        """Μέθοδος η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το πέρας ενός
+           συγκεκριμένου χρονικού διαστήματος"""
+        if len(Car.total_car_list) < Car.cars_limit:
             rand_num = random.randint(1, 100)
             if rand_num <= 35:
                 direction = 1
