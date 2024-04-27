@@ -3,8 +3,8 @@ import functools
 import random
 import math
 # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
-CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(830, 950), (890, 950)],
-                           "3": [(1640, 365), (1640, 420)], "4": [(710, -40), (770, -40)]}
+CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(730, 950), (800, 950)],
+                           "3": [(1640, 365), (1640, 420)]}
 
 
 class Car:
@@ -12,7 +12,7 @@ class Car:
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
     cars_limit = 10
     # Λίστα με τα ενεργά αυτοκίνητα
-    cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []], "4": [[], []]}
+    cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []]}
     total_car_list = []
 
     def __init__(self, image, direction, lane, canvas, window):
@@ -111,21 +111,18 @@ class Car:
                 return True
         return False
 
-
     @classmethod
     def car_creator(cls, car_images, canvas, root):
         """Μέθοδος η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το πέρας ενός
            συγκεκριμένου χρονικού διαστήματος"""
         if len(Car.total_car_list) < Car.cars_limit:
             rand_num = random.randint(1, 100)
-            if rand_num <= 35:
+            if rand_num <= 40:
                 direction = 1
-            elif rand_num <= 50:
+            elif rand_num <= 60:
                 direction = 2
-            elif rand_num <= 85:
-                direction = 3
             else:
-                direction = 4
+                direction = 3
             lane = random.choice([0, 1])
             car_type = random.choice([0, 1])
             Car(image=car_images[str(direction)][car_type], direction=direction, lane=lane, canvas=canvas, window=root)
