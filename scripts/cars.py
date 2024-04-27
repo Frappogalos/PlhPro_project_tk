@@ -27,12 +27,11 @@ class Car:
         self.y = CARS_STARTING_POSITIONS[str(self.direction)][self.lane][1]
         self.root = window
         self.canvas = canvas
-        if not self.spawn_collision():
-            self.car = self.canvas.create_image(self.x, self.y, image=self.image)
-            Car.cars_dict[str(self.direction)][self.lane].append(self)
-            Car.total_car_list.append(self)
-            self.move_car()
-        else:
+        self.car = self.canvas.create_image(self.x, self.y, image=self.image)
+        Car.cars_dict[str(self.direction)][self.lane].append(self)
+        Car.total_car_list.append(self)
+        self.move_car()
+        if self.spawn_collision():
             self.delete_car()
 
     def find_speed(self):
@@ -100,7 +99,7 @@ class Car:
         """Μέθοδος η οποία ελέγχει αν το αυτοκίνητο που θα δημιουργηθεί θα συγκρουσθεί με ήδη
         υπάρχον αυτοκίνητο"""
         for car in Car.cars_dict[str(self.direction)][self.lane]:
-            if math.sqrt(abs(self.x - car.x)**2 + abs(self.y - car.y)**2) < 81:
+            if car != self and math.sqrt(abs(self.x - car.x)**2 + abs(self.y - car.y)**2) < 81:
                 return True
         return False
 
