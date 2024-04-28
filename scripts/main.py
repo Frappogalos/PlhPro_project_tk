@@ -22,7 +22,7 @@ bg = ImageTk.PhotoImage(Image.open(BG_IMAGE))
 pause_img = ImageTk.PhotoImage(Image.open(PAUSE_IMAGE))
 on_off_red = ImageTk.PhotoImage(Image.open(ON_OFF_RED))
 on_off_green = ImageTk.PhotoImage(Image.open(ON_OFF_GRN))
-# ped_image = ImageTk.PhotoImage(Image.open("../images/pedestrians/person_1_l.png"))
+# ped_image = ImageTk.PhotoImage(Image.open("../images/pedestrians/person_1.png"))
 # Δημιουργία λεξικού με τις φωτογραφίες των αυτοκινήτων ανάλογα με την κατεύθυνση
 # του κάθε οχήματος
 for i in range(0, 3):
