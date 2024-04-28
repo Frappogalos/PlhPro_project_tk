@@ -5,7 +5,7 @@ import math
 # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
 CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(730, 950), (800, 950)],
                            "3": [(1550, 365), (1550, 420)]}
-
+SPEED = 6
 
 class Car:
     """Κλάση Car για τη δημιουργία των αυτοκινήτων και τις λειτουργίες τους"""
@@ -37,11 +37,11 @@ class Car:
     def find_speed(self):
         """Μέθοδος όπου ανάλογα με την κατεύθυνση του αυτοκινήτου επιστρέφει την ανάλογη ταχύτητα"""
         if self.direction == 1:
-            return 6, 0
+            return SPEED, 0
         elif self.direction == 2:
-            return 0, -6
+            return 0, -SPEED
         elif self.direction == 3:
-            return -6, 0
+            return -SPEED, 0
 
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
