@@ -2,6 +2,7 @@ import tkinter as tk
 from buttons import OpButton, PauseButton
 from PIL import ImageTk, Image
 from cars import Car
+from pedestrians import Pedestrian
 
 
 BG_IMAGE = "../images/double_intersection.jpg"
@@ -11,6 +12,7 @@ ON_OFF_GRN = "../images/buttons/on_off_grn.png"
 CAR_IMAGE_1 = "../images/cars/car_01.png"
 CAR_IMAGE_2 = "../images/cars/car_02.png"
 CAR_IMAGES_DICT = {}
+PEDESTRIAN_IMAGES_DICT = {}
 
 # Δημιουργία παραθύρου
 root = tk.Tk()
@@ -22,7 +24,15 @@ bg = ImageTk.PhotoImage(Image.open(BG_IMAGE))
 pause_img = ImageTk.PhotoImage(Image.open(PAUSE_IMAGE))
 on_off_red = ImageTk.PhotoImage(Image.open(ON_OFF_RED))
 on_off_green = ImageTk.PhotoImage(Image.open(ON_OFF_GRN))
-# ped_image = ImageTk.PhotoImage(Image.open("../images/pedestrians/person_1.png"))
+# Δημιουργία λεξικού με τις φωτογραφίες των πεζών ανάλογα με την κατεύθυνση
+# του κάθε ένα
+ped_images = {}
+for x in range(0, 4):
+    for i in range(1, 3):
+        ped_images[str(i)] = {"left": ImageTk.PhotoImage(Image.open(f"../images/pedestrians/Person_{i}_l.png")),
+                              "right": ImageTk.PhotoImage(Image.open(f"../images/pedestrians/Person_{i}_r.png")),
+                              "stopped": ImageTk.PhotoImage(Image.open(f"../images/pedestrians/Person_{i}_st.png"))}
+    PEDESTRIAN_IMAGES_DICT[str(x+1)] = ped_images
 # Δημιουργία λεξικού με τις φωτογραφίες των αυτοκινήτων ανάλογα με την κατεύθυνση
 # του κάθε οχήματος
 for i in range(0, 3):
@@ -40,6 +50,7 @@ PauseButton(x=1000, y=50, image=pause_img, window=root)
 OpButton(x=1100, y=50, images=(on_off_green, on_off_red), window=root)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
 Car.car_creator(car_images=CAR_IMAGES_DICT, canvas=canvas, root=root)
-# pedestrian = canvas.create_image(300, 300, image=ped_image)
+
+Pedestrian.pedestrian_creator(ped_images=PEDESTRIAN_IMAGES_DICT, canvas=canvas, root=root)
 
 root.mainloop()

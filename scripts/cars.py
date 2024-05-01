@@ -117,6 +117,6 @@ class Car:
             else:
                 direction = 3
             lane = random.choice([0, 1])
-            car_type = random.choice([0, 1])
-            Car(image=car_images[str(direction)][car_type], direction=direction, lane=lane, canvas=canvas, window=root)
+            car_image = random.choice(car_images[str(direction)])
+            Car(image=car_image, direction=direction, lane=lane, canvas=canvas, window=root)
         root.after(4000, functools.partial(Car.car_creator, car_images, canvas, root))
