@@ -1,15 +1,18 @@
 import tkinter as tk
 import functools
 import random
+from PIL import ImageTk, Image
 import math
-# Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
-CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(730, 950), (800, 950)],
-                           "3": [(1550, 365), (1550, 420)]}
-SPEED = 6
 
 
 class Car:
     """Κλάση Car για τη δημιουργία των αυτοκινήτων και τις λειτουργίες τους"""
+    # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
+    CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(730, 950), (800, 950)],
+                               "3": [(1550, 365), (1550, 420)]}
+    SPEED = 6
+    CAR_IMAGE_1 = "../images/cars/car_01.png"
+    CAR_IMAGE_2 = "../images/cars/car_02.png"
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
     cars_limit = 10
     # Λίστα με τα ενεργά αυτοκίνητα
@@ -24,8 +27,8 @@ class Car:
         self.speed = self.find_speed()
         self.moving = True
         self.stopped = None
-        self.x = CARS_STARTING_POSITIONS[str(self.direction)][self.lane][0]
-        self.y = CARS_STARTING_POSITIONS[str(self.direction)][self.lane][1]
+        self.x = Car.CARS_STARTING_POSITIONS[str(self.direction)][self.lane][0]
+        self.y = Car.CARS_STARTING_POSITIONS[str(self.direction)][self.lane][1]
         self.root = window
         self.canvas = canvas
         self.car = self.canvas.create_image(self.x, self.y, image=self.image)
@@ -38,11 +41,11 @@ class Car:
     def find_speed(self):
         """Μέθοδος όπου ανάλογα με την κατεύθυνση του αυτοκινήτου επιστρέφει την ανάλογη ταχύτητα"""
         if self.direction == 1:
-            return SPEED, 0
+            return Car.SPEED, 0
         elif self.direction == 2:
-            return 0, -SPEED
+            return 0, -Car.SPEED
         elif self.direction == 3:
-            return -SPEED, 0
+            return -Car.SPEED, 0
 
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
@@ -105,9 +108,10 @@ class Car:
         return False
 
     @classmethod
-    def car_creator(cls, car_images, canvas, root):
+    def car_creator(cls, images, canvas, root):
         """Μέθοδος η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το πέρας ενός
            συγκεκριμένου χρονικού διαστήματος"""
+        car_images = images
         if len(Car.total_car_list) < Car.cars_limit:
             rand_num = random.randint(1, 100)
             if rand_num <= 40:
@@ -120,3 +124,13 @@ class Car:
             car_image = random.choice(car_images[str(direction)])
             Car(image=car_image, direction=direction, lane=lane, canvas=canvas, window=root)
         root.after(4000, functools.partial(Car.car_creator, car_images, canvas, root))
+
+    @classmethod
+    def create_images(cls):
+        # Δημιουργία λεξικού με τις φωτογραφίες των αυτοκινήτων ανάλογα με την κατεύθυνση
+        # του κάθε οχήματος
+        images = {}
+        for i in range(0, 3):
+            images[str(i + 1)] = [ImageTk.PhotoImage(Image.open(Car.CAR_IMAGE_1).rotate(90 * i, expand=True)),
+                                  ImageTk.PhotoImage(Image.open(Car.CAR_IMAGE_2).rotate(90 * i, expand=True))]
+        return images

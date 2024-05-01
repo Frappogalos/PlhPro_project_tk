@@ -18,7 +18,7 @@ class Pedestrian:
 
     def __init__(self, image, direction, canvas, window):
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
-        self.image = image["stopped"]
+        self.image = image["st"]
         self.direction = direction
         self.speed = self.find_speed()
         self.moving = True
