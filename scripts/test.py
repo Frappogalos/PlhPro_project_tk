@@ -1,8 +1,8 @@
 from PIL import Image, ImageOps
-file = "../images/pedestrians/Person_2_st.png"
+file = "../images/pedestrians/Person_1_st.png"
 img = Image.open(file)
 # mirror_img = ImageOps.mirror(img)
-# img = img.resize((30, 30))
-img = img.rotate(270)
+ratio = 1.2
+img = img.resize((int(img.width*ratio), int(img.height*ratio)))
+# img = img.rotate(270)
 img.save(file)
-

@@ -8,8 +8,8 @@ import math
 class Car:
     """Κλάση Car για τη δημιουργία των αυτοκινήτων και τις λειτουργίες τους"""
     # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
-    CARS_STARTING_POSITIONS = {"1": [(-40, 530), (-40, 475)], "2": [(730, 950), (800, 950)],
-                               "3": [(1550, 365), (1550, 420)]}
+    CARS_STARTING_POSITIONS = {"1": [(-40, 645), (-40, 570)], "2": [(870, 1030), (960, 1030)],
+                               "3": [(1882, 440), (1882, 510)]}
     SPEED = 6
     CAR_IMAGE_1 = "../images/cars/car_01.png"
     CAR_IMAGE_2 = "../images/cars/car_02.png"
@@ -72,7 +72,7 @@ class Car:
         if self.moving:
             # Εφόσον κινείται το αυτοκίνητο αν είναι εντός των ορίων του καμβά συνεχίζει την κίνησή του
             # αλλιώς διαγράφεται το αυτοκίνητο
-            if -100 < self.x < 1600 and -100 < self.y < 1000:
+            if -100 < self.x < 1932 and -100 < self.y < 1180:
                 self.canvas.move(self.car, self.speed[0], self.speed[1])
                 self.x += self.speed[0]
                 self.y += self.speed[1]
