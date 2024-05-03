@@ -8,13 +8,14 @@ from PIL import ImageTk, Image
 class Pedestrian:
     """Κλάση Pedestrian για τη δημιουργία των πεζών και τις λειτουργίες τους"""
     # Οι θέσεις όπου εμφανίζονται οι πεζοί όταν δημιουργούνται
-    PEDESTRIAN_STARTING_POSITIONS = {"1": (-40, 360), "2": (780, 1130),
+    pedestrian_starting_positions = {"1": (-40, 360), "2": (780, 1130),
                                      "3": (1882, 720), "4": (1060, -40)}
-    SPEED = 3
-    PED_DIRECTIONS = 4
-    NUM_OF_PERSON_IMAGES = 2
-    NUM_OF_STEPS = 2
-    PED_IMG_FILE = f"../images/pedestrians/Person_#_$.png"
+    speed = 3
+    speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0), "4": (0, speed)}
+    ped_directions = 4
+    num_of_person_images = 2
+    num_of_steps = 2
+    ped_img_file = f"../images/pedestrians/Person_#_$.png"
     # Μέγιστος αριθμός πεζών που μπορούν να υπάρχουν ταυτόχρονα
     pedestrian_limit = 10
     # Λίστα με τους ενεργούς πεζούς
@@ -25,13 +26,13 @@ class Pedestrian:
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
         self.image = image
         self.direction = direction
-        self.speed = self.find_speed()
+        self.speed = Pedestrian.speed_by_direction[str(self.direction)]
         self.moving = True
         self.stopped = None
         self.step = 0
         self.frames = 0
-        self.x = Pedestrian.PEDESTRIAN_STARTING_POSITIONS[str(self.direction)][0]
-        self.y = Pedestrian.PEDESTRIAN_STARTING_POSITIONS[str(self.direction)][1]
+        self.x = Pedestrian.pedestrian_starting_positions[str(self.direction)][0]
+        self.y = Pedestrian.pedestrian_starting_positions[str(self.direction)][1]
         self.root = window
         self.canvas = canvas
         self.pedestrian = self.canvas.create_image(self.x, self.y, image=self.image["st"])
@@ -40,17 +41,6 @@ class Pedestrian:
         self.move_ped()
         if self.spawn_collision():
             self.delete_ped()
-
-    def find_speed(self):
-        """Μέθοδος όπου ανάλογα με την κατεύθυνση του αυτοκινήτου επιστρέφει την ανάλογη ταχύτητα"""
-        if self.direction == 1:
-            return Pedestrian.SPEED, 0
-        elif self.direction == 2:
-            return 0, -Pedestrian.SPEED
-        elif self.direction == 3:
-            return -Pedestrian.SPEED, 0
-        else:
-            return 0, Pedestrian.SPEED
 
     def move_ped(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε πεζού"""
@@ -90,7 +80,7 @@ class Pedestrian:
                 if self.frames == 9:
                     self.step += 1
                     self.frames = 0
-                if self.step == Pedestrian.NUM_OF_STEPS:
+                if self.step == Pedestrian.num_of_steps:
                     self.step = 0
                 self.canvas.itemconfig(self.pedestrian, image=self.image[str(self.step)])
                 self.root.after(30, self.move_ped)
@@ -101,12 +91,12 @@ class Pedestrian:
             # οποίο σταμάτησε ξεκινάει πάλι να κινείται
             if (self.direction == 1 or self.direction == 3) and abs(self.x - self.stopped.x) > 180:
                 self.moving = True
-                self.speed = self.find_speed()
+                self.speed = Pedestrian.speed_by_direction[str(self.direction)]
                 self.stopped = None
                 self.root.after(500, self.move_ped)
             elif (self.direction == 2 or self.direction == 4) and abs(self.y - self.stopped.y) > 180:
                 self.moving = True
-                self.speed = self.find_speed()
+                self.speed = Pedestrian.speed_by_direction[str(self.direction)]
                 self.stopped = None
                 self.root.after(500, self.move_ped)
 
@@ -147,12 +137,12 @@ class Pedestrian:
         # Δημιουργία λεξικού με τις φωτογραφίες των πεζών ανάλογα με την κατεύθυνση
         # του κάθε ένα
         images = {}
-        for x in range(0, Pedestrian.PED_DIRECTIONS):
+        for x in range(0, Pedestrian.ped_directions):
             ped_images = {}
-            for i in range(0, Pedestrian.NUM_OF_PERSON_IMAGES):
+            for i in range(0, Pedestrian.num_of_person_images):
                 ped_images[str(i + 1)] = {}
-                for y in range(0, Pedestrian.NUM_OF_STEPS):
-                    ped_images[str(i + 1)][str(y)] = ImageTk.PhotoImage(Image.open(Pedestrian.PED_IMG_FILE.replace("#", str(i)).replace("$", str(y))).rotate(90 * x, expand=True))
-                ped_images[str(i + 1)]["st"] = ImageTk.PhotoImage(Image.open(Pedestrian.PED_IMG_FILE.replace("#", str(i)).replace("$", "st")).rotate(90 * x, expand=True))
+                for y in range(0, Pedestrian.num_of_steps):
+                    ped_images[str(i + 1)][str(y)] = ImageTk.PhotoImage(Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", str(y))).rotate(90 * x, expand=True))
+                ped_images[str(i + 1)]["st"] = ImageTk.PhotoImage(Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", "st")).rotate(90 * x, expand=True))
             images[str(x + 1)] = ped_images
         return images
