@@ -7,6 +7,7 @@ class TrafficLights:
 	light_phases = ["off", "green", "orange", "red"]
 	light_img_file = "../images/traffic_lights/car_#.png"
 	tr_lights_dict = {}
+	tr_lights_main_sec = {"main": [], "secondary": []}
 	current_mode = "normal"
 	time_on = time.time()
 
@@ -20,6 +21,10 @@ class TrafficLights:
 		self.root = window
 		self.canvas = canvas
 		self.tr_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
+		if self.direction == 1 or self.direction == 3:
+			TrafficLights.tr_lights_main_sec["main"].append(self)
+		else:
+			TrafficLights.tr_lights_main_sec["secondary"].append(self)
 		TrafficLights.tr_lights_dict[str(self.direction)] = self
 		self.change()
 
@@ -35,16 +40,14 @@ class TrafficLights:
 	def operation(cls):
 		"""Μέθοδος η οποία διαχειρίζεται τη λειτουργία των φωτεινών σηματοδοτών"""
 		if TrafficLights.current_mode == "night":
-			for key, val in TrafficLights.tr_lights_dict.items():
-				if key == "1" or key == "3":
-					if val.command != "off":
-						val.command = "off"
-				else:
-					if val.command == "off":
-						val.command = "orange"
-					elif val.command == "orange":
-						val.command = "off"
-			TrafficLights.tr_lights_dict["1"].root.after(1000, TrafficLights.operation)
+			for val in TrafficLights.tr_lights_main_sec["main"]:
+				if val.command != "off":
+					val.command = "off"
+			for val in TrafficLights.tr_lights_main_sec["secondary"]:
+				if val.command == "off":
+					val.command = "orange"
+				elif val.command == "orange":
+					val.command = "off"
 		elif TrafficLights.current_mode == "normal":
 			pass
 		TrafficLights.tr_lights_dict["1"].root.after(1000, TrafficLights.operation)
