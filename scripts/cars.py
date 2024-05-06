@@ -14,7 +14,7 @@ class Car:
     speed = 6
     speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0)}
     num_of_car_images = 2
-    front_car_min_distance = 120
+    front_car_min_distance = 150
     car_image = "../images/cars/car_#.png"
     orig_img_ratio = 0.1
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
@@ -30,7 +30,8 @@ class Car:
         self.lane = lane
         self.speed = Car.speed_by_direction[str(self.direction)]
         self.moving = True
-        self.stopped = None
+        self.stopped = {"<class 'cars.Car'>": None, "<class 'traffic_lights.TrafficLights'>": None,
+                        "<class 'pedestrians.Pedestrian'>": None}
         self.x = Car.cars_starting_positions[str(self.direction)][self.lane][0]
         self.y = Car.cars_starting_positions[str(self.direction)][self.lane][1]
         self.root = window
@@ -51,32 +52,37 @@ class Car:
             for car in Car.cars_dict[str(self.direction)][self.lane]:
                 if self != car and self.direction == car.direction and self.lane == car.lane:
                     if self.direction == 1 and 0 < car.x - self.x < Car.front_car_min_distance:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = car
-                        self.root.after(30, self.move_car)
+                        self.stop_car(car)
                     elif self.direction == 3 and 0 < self.x - car.x < Car.front_car_min_distance:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = car
-                        self.root.after(30, self.move_car)
+                        self.stop_car(car)
                     elif self.direction == 2 and 0 < self.y - car.y < Car.front_car_min_distance:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = car
-                        self.root.after(30, self.move_car)
+                        self.stop_car(car)
 
     def check_traffic_lights(self):
-        if (TrafficLights.tr_lights_dict[str(self.direction)].phase == "red" or
-            TrafficLights.tr_lights_dict[str(self.direction)].phase == "orange"):
-            self.moving = False
-            self.speed = (0, 0)
-            self.stopped = TrafficLights.tr_lights_dict[str(self.direction)]
-            self.root.after(30, self.move_car)
+        if self.moving:
+            if (TrafficLights.current_mode == "normal" and
+                    (TrafficLights.tr_lights_dict[str(self.direction)].phase == "red"
+                     or TrafficLights.tr_lights_dict[str(self.direction)].phase == "orange")):
+                self.stop_car(TrafficLights.tr_lights_dict[str(self.direction)])
+            elif (TrafficLights.current_mode == "night" and self.direction == 2 and
+                  self.find_distance(TrafficLights.tr_lights_dict[str(self.direction)]) < 150):
+                self.stop_car(TrafficLights.tr_lights_dict[str(self.direction)])
+        else:
+            if (TrafficLights.current_mode == "normal" and
+                    (TrafficLights.tr_lights_dict[str(self.direction)].phase == "green" or
+                     TrafficLights.tr_lights_dict[str(self.direction)].phase == "off")):
+                self.restart_movement(str(type(TrafficLights.tr_lights_dict[str(self.direction)])))
+
+    def stop_car(self, entity):
+        self.moving = False
+        self.speed = (0, 0)
+        self.stopped[str(type(entity))] = entity
+        self.root.after(30, self.move_car)
 
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
         self.front_car_collision()
+        self.check_traffic_lights()
         if self.moving:
             # Εφόσον κινείται το αυτοκίνητο, αν είναι εντός των ορίων του καμβά συνεχίζει την κίνησή του
             # αλλιώς διαγράφεται
@@ -87,19 +93,17 @@ class Car:
                 self.root.after(30, self.move_car)
             else:
                 self.delete_car()
-        else:
+        elif self.stopped["<class 'cars.Car'>"]:
             # Εφόσον είναι σταματημένο το αυτοκίνητο, αν μεγαλώσει η απόσταση από το αυτοκίνητο για το
             # οποίο σταμάτησε ξεκινάει πάλι να κινείται
-            if (self.direction == 1 or self.direction == 3) and abs(self.x - self.stopped.x) > 180:
-                self.moving = True
-                self.speed = Car.speed_by_direction[str(self.direction)]
-                self.stopped = None
-                self.root.after(500, self.move_car)
-            elif self.direction == 2 and abs(self.y - self.stopped.y) > 180:
-                self.moving = True
-                self.speed = Car.speed_by_direction[str(self.direction)]
-                self.stopped = None
-                self.root.after(500, self.move_car)
+            if self.find_distance(self.stopped[str(type(self))]) > Car.front_car_min_distance + 50:
+                self.restart_movement(str(type(self)))
+
+    def restart_movement(self, entity_type):
+        self.moving = True
+        self.speed = Car.speed_by_direction[str(self.direction)]
+        self.stopped[entity_type] = None
+        self.root.after(30, self.move_car)
 
     def delete_car(self):
         """Μέθοδος η οποία διαγράφει το αυτοκίνητο εφόσον εξέλθει των ορίων του καμβά"""
@@ -111,9 +115,12 @@ class Car:
         """Μέθοδος η οποία ελέγχει αν το αυτοκίνητο που θα δημιουργηθεί θα συγκρουσθεί με ήδη
         υπάρχον αυτοκίνητο"""
         for car in Car.cars_dict[str(self.direction)][self.lane]:
-            if car != self and math.sqrt(abs(self.x - car.x)**2 + abs(self.y - car.y)**2) < 81:
+            if car != self and self.find_distance(car) < 81:
                 return True
         return False
+
+    def find_distance(self, entity):
+        return math.sqrt(abs(self.x - entity.x)**2 + abs(self.y - entity.y)**2)
 
     @classmethod
     def car_creator(cls, images, canvas, root):
