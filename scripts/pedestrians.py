@@ -15,6 +15,7 @@ class Pedestrian:
     num_of_person_images = 2
     num_of_steps = 2
     ped_img_file = f"../images/pedestrians/Person_#_$.png"
+    orig_img_ratio = 0.3
     # Μέγιστος αριθμός πεζών που μπορούν να υπάρχουν ταυτόχρονα
     pedestrian_limit = 10
     # Λίστα με τους ενεργούς πεζούς
@@ -134,14 +135,22 @@ class Pedestrian:
     @classmethod
     def create_images(cls):
         # Δημιουργία λεξικού με τις φωτογραφίες των πεζών ανάλογα με την κατεύθυνση
-        # του κάθε ένα
+        # του κάθε ενός
         images = {}
-        for x in range(0, len(Pedestrian.speed_by_direction)):
+        for x in Pedestrian.speed_by_direction.keys():
             ped_images = {}
             for i in range(0, Pedestrian.num_of_person_images):
                 ped_images[str(i + 1)] = {}
                 for y in range(0, Pedestrian.num_of_steps):
-                    ped_images[str(i + 1)][str(y)] = ImageTk.PhotoImage(Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", str(y))).rotate(90 * x, expand=True))
-                ped_images[str(i + 1)]["st"] = ImageTk.PhotoImage(Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", "st")).rotate(90 * x, expand=True))
-            images[str(x + 1)] = ped_images
+                    pedestrian_img = Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", str(y)))
+                    resized_img = pedestrian_img.resize((int(pedestrian_img.width*Pedestrian.orig_img_ratio),
+                                                         int(pedestrian_img.height*Pedestrian.orig_img_ratio)))
+                    rotated_img = resized_img.rotate(90 * (int(x)-1), expand=True)
+                    ped_images[str(i + 1)][str(y)] = ImageTk.PhotoImage(rotated_img)
+                pedestrian_img = Image.open(Pedestrian.ped_img_file.replace("#", str(i)).replace("$", "st"))
+                resized_img = pedestrian_img.resize((int(pedestrian_img.width * Pedestrian.orig_img_ratio),
+                                                     int(pedestrian_img.height * Pedestrian.orig_img_ratio)))
+                rotated_img = resized_img.rotate(90 * (int(x) - 1), expand=True)
+                ped_images[str(i + 1)]["st"] = ImageTk.PhotoImage(rotated_img)
+            images[x] = ped_images
         return images

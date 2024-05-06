@@ -3,6 +3,7 @@ import functools
 import random
 from PIL import ImageTk, Image
 import math
+from traffic_lights import TrafficLights
 
 
 class Car:
@@ -13,6 +14,7 @@ class Car:
     speed = 6
     speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0)}
     num_of_car_images = 2
+    front_car_min_distance = 120
     car_image = "../images/cars/car_#.png"
     orig_img_ratio = 0.1
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
@@ -40,31 +42,44 @@ class Car:
         if self.spawn_collision():
             self.delete_car()
 
-    def move_car(self):
-        """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
+    def front_car_collision(self):
+        """Μέθοδος που ελέγχει την απόσταση από το προπορευόμενο όχημα και αν αυτή είναι μικρότερη
+        από την οριζόμενη τιμή ακινητοποιείται"""
         if self.moving:
             # Εφόσον το αυτοκίνητο κινείται ελέγχει την απόσταση από το προπορευόμενο αυτοκίνητο
             # και αν αυτή είναι κάτω από την οριζόμενη τιμή ακινητοποιείται
             for car in Car.cars_dict[str(self.direction)][self.lane]:
                 if self != car and self.direction == car.direction and self.lane == car.lane:
-                    if self.direction == 1 and 0 < car.x - self.x < 120:
+                    if self.direction == 1 and 0 < car.x - self.x < Car.front_car_min_distance:
                         self.moving = False
                         self.speed = (0, 0)
                         self.stopped = car
                         self.root.after(30, self.move_car)
-                    elif self.direction == 3 and 0 < self.x - car.x < 120:
+                    elif self.direction == 3 and 0 < self.x - car.x < Car.front_car_min_distance:
                         self.moving = False
                         self.speed = (0, 0)
                         self.stopped = car
                         self.root.after(30, self.move_car)
-                    elif self.direction == 2 and 0 < self.y - car.y < 120:
+                    elif self.direction == 2 and 0 < self.y - car.y < Car.front_car_min_distance:
                         self.moving = False
                         self.speed = (0, 0)
                         self.stopped = car
                         self.root.after(30, self.move_car)
+
+    def check_traffic_lights(self):
+        if (TrafficLights.tr_lights_dict[str(self.direction)].phase == "red" or
+            TrafficLights.tr_lights_dict[str(self.direction)].phase == "orange"):
+            self.moving = False
+            self.speed = (0, 0)
+            self.stopped = TrafficLights.tr_lights_dict[str(self.direction)]
+            self.root.after(30, self.move_car)
+
+    def move_car(self):
+        """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
+        self.front_car_collision()
         if self.moving:
-            # Εφόσον κινείται το αυτοκίνητο αν είναι εντός των ορίων του καμβά συνεχίζει την κίνησή του
-            # αλλιώς διαγράφεται το αυτοκίνητο
+            # Εφόσον κινείται το αυτοκίνητο, αν είναι εντός των ορίων του καμβά συνεχίζει την κίνησή του
+            # αλλιώς διαγράφεται
             if -100 < self.x < 1932 and -100 < self.y < 1180:
                 self.canvas.move(self.car, self.speed[0], self.speed[1])
                 self.x += self.speed[0]
@@ -126,9 +141,9 @@ class Car:
         for i in Car.speed_by_direction.keys():
             images[i] = []
             for x in range(0, Car.num_of_car_images):
-                car_1_img = Image.open(Car.car_image.replace("#", str(x+1)))
-                resized_car_1 = car_1_img.resize((int(car_1_img.width*Car.orig_img_ratio),
-                                                  int(car_1_img.height*Car.orig_img_ratio)))
-                rotated_image = resized_car_1.rotate(90 * (int(i)-1), expand=True)
+                car_img = Image.open(Car.car_image.replace("#", str(x+1)))
+                resized_car = car_img.resize((int(car_img.width*Car.orig_img_ratio),
+                                              int(car_img.height*Car.orig_img_ratio)))
+                rotated_image = resized_car.rotate(90 * (int(i)-1), expand=True)
                 images[i].append(ImageTk.PhotoImage(rotated_image))
         return images
