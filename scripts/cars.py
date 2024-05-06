@@ -40,8 +40,6 @@ class Car:
         Car.cars_dict[str(self.direction)][self.lane].append(self)
         Car.total_car_list.append(self)
         self.move_car()
-        if self.spawn_collision():
-            self.delete_car()
 
     def front_car_collision(self):
         """Μέθοδος που ελέγχει την απόσταση από το προπορευόμενο όχημα και αν αυτή είναι μικρότερη
@@ -59,6 +57,7 @@ class Car:
                         self.stop_car(car)
 
     def check_traffic_lights(self):
+        # TODO check the whole logic again
         if self.moving:
             if (TrafficLights.current_mode == "normal" and
                     (TrafficLights.tr_lights_dict[str(self.direction)].phase == "red"
@@ -108,16 +107,8 @@ class Car:
     def delete_car(self):
         """Μέθοδος η οποία διαγράφει το αυτοκίνητο εφόσον εξέλθει των ορίων του καμβά"""
         self.canvas.delete(self.car)
-        Car.cars_dict[str(self.direction)][self.lane].remove(self)
         Car.total_car_list.remove(self)
-
-    def spawn_collision(self):
-        """Μέθοδος η οποία ελέγχει αν το αυτοκίνητο που θα δημιουργηθεί θα συγκρουσθεί με ήδη
-        υπάρχον αυτοκίνητο"""
-        for car in Car.cars_dict[str(self.direction)][self.lane]:
-            if car != self and self.find_distance(car) < 81:
-                return True
-        return False
+        Car.cars_dict[str(self.direction)][self.lane].remove(self)
 
     def find_distance(self, entity):
         return math.sqrt(abs(self.x - entity.x)**2 + abs(self.y - entity.y)**2)

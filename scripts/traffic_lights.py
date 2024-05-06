@@ -10,13 +10,18 @@ class TrafficLights:
     tr_lights_dict = {}
     tr_lights_main_sec = {"main": [], "secondary": []}
     current_mode = "normal"
+    previous_red = "secondary"
     time_on = time.time()
 
     def __init__(self, images, direction, canvas, window):
         self.images = images
         self.direction = direction
-        self.command = "off"
-        self.phase = "off"
+        if self.direction == 1 or self.direction == 3:
+            self.command = "green"
+            self.phase = "green"
+        else:
+            self.command = "red"
+            self.phase = "red"
         self.x = TrafficLights.lights_positions[str(self.direction)][0]
         self.y = TrafficLights.lights_positions[str(self.direction)][1]
         self.root = window
@@ -50,7 +55,39 @@ class TrafficLights:
                 elif val.command == "orange":
                     val.command = "off"
         elif TrafficLights.current_mode == "normal":
-            pass
+            if TrafficLights.tr_lights_main_sec["main"][0].phase == "green" and time.time() - TrafficLights.time_on > 30:
+                TrafficLights.time_on = time.time()
+                for val in TrafficLights.tr_lights_main_sec["main"]:
+                    val.command = "orange"
+            elif TrafficLights.tr_lights_main_sec["main"][0].phase == "orange" and time.time() - TrafficLights.time_on > 3:
+                TrafficLights.time_on = time.time()
+                TrafficLights.previous_red = "secondary"
+                for val in TrafficLights.tr_lights_main_sec["main"]:
+                    val.command = "red"
+            elif (TrafficLights.tr_lights_main_sec["main"][0].phase == "red" and
+                  TrafficLights.tr_lights_main_sec["secondary"][0].phase == "red" and
+                  TrafficLights.previous_red == "secondary" and
+                  time.time() - TrafficLights.time_on > 1):
+                TrafficLights.time_on = time.time()
+                for val in TrafficLights.tr_lights_main_sec["secondary"]:
+                    val.command = "green"
+            elif TrafficLights.tr_lights_main_sec["main"][0].phase == "red" and time.time() - TrafficLights.time_on > 15:
+                TrafficLights.time_on = time.time()
+                for val in TrafficLights.tr_lights_main_sec["secondary"]:
+                    val.command = "orange"
+            elif (TrafficLights.tr_lights_main_sec["secondary"][0].phase == "orange" and
+                  time.time() - TrafficLights.time_on > 3):
+                TrafficLights.time_on = time.time()
+                TrafficLights.previous_red = "main"
+                for val in TrafficLights.tr_lights_main_sec["secondary"]:
+                    val.command = "red"
+            elif (TrafficLights.tr_lights_main_sec["main"][0].phase == "red" and
+                  TrafficLights.tr_lights_main_sec["secondary"][0].phase == "red" and
+                  TrafficLights.previous_red == "main" and
+                  time.time() - TrafficLights.time_on > 1):
+                TrafficLights.time_on = time.time()
+                for val in TrafficLights.tr_lights_main_sec["main"]:
+                    val.command = "green"
         TrafficLights.tr_lights_dict["1"].root.after(1000, TrafficLights.operation)
 
     @classmethod
