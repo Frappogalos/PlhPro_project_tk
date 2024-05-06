@@ -9,26 +9,26 @@ class TrafficLightApp:
         self.master.geometry("1000x1000")
 
         self.car_images = {
-            "off": "C:/Users/Stefanos/Pictures/car_off.png",
-            "red": "C:/Users/Stefanos/Pictures/car_red.png",
-            "orange": "C:/Users/Stefanos/Pictures/car_orange.png",
-            "green": "C:/Users/Stefanos/Pictures/car_green.png"
+            "off": "../images/traffic_lights/car_off.png",
+            "red": "../images/traffic_lights/car_red.png",
+            "orange": "../images/traffic_lights/car_orange.png",
+            "green": "../images/traffic_lights/car_green.png"
         }
         self.pedestrian_images = {
-            "off": "C:/Users/Stefanos/Pictures/pedestrian_off.png",
-            "red": "C:/Users/Stefanos/Pictures/pedestrian_red.png",
-            "green": "C:/Users/Stefanos/Pictures/pedestrian_green.png"
+            "off": "../images/traffic_lights/pedestrian_off.png",
+            "red": "../images/traffic_lights/pedestrian_red.png",
+            "green": "../images/traffic_lights/pedestrian_green.png"
         }
         self.current_car_image = cycle(self.car_images.values())
         self.current_pedestrian_image = cycle(self.pedestrian_images.values())
 
-        self.double_intersection_image_path = "C:/Users/Stefanos/Pictures/double_intersection.jpg"
+        self.double_intersection_image_path = "../images/double_intersection.jpg"
 
         self.frame = tk.Frame(self.master)
         self.frame.pack()
 
         # Load background image and resize
-        self.bg_image_path = "C:/Users/Stefanos/Pictures/double_intersection.jpg"
+        self.bg_image_path = "../images/double_intersection.jpg"
         self.bg_image = Image.open(self.bg_image_path)
         self.bg_image_resized = self.bg_image.resize(
             (self.master.winfo_screenwidth(), self.master.winfo_screenheight()), Image.LANCZOS)
