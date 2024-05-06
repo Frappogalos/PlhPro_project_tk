@@ -12,8 +12,9 @@ class Car:
                                "3": [(1882, 440), (1882, 510)]}
     speed = 6
     speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0)}
-    car_image_1 = "../images/cars/car_01.png"
-    car_image_2 = "../images/cars/car_02.png"
+    num_of_car_images = 2
+    car_image = "../images/cars/car_#.png"
+    orig_img_ratio = 0.1
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
     cars_limit = 10
     # Λίστα με τα ενεργά αυτοκίνητα
@@ -122,7 +123,12 @@ class Car:
         # Δημιουργία λεξικού με τις φωτογραφίες των αυτοκινήτων ανάλογα με την κατεύθυνση
         # του κάθε οχήματος
         images = {}
-        for i in range(0, 3):
-            images[str(i + 1)] = [ImageTk.PhotoImage(Image.open(Car.car_image_1).rotate(90 * i, expand=True)),
-                                  ImageTk.PhotoImage(Image.open(Car.car_image_2).rotate(90 * i, expand=True))]
+        for i in Car.speed_by_direction.keys():
+            images[i] = []
+            for x in range(0, Car.num_of_car_images):
+                car_1_img = Image.open(Car.car_image.replace("#", str(x+1)))
+                resized_car_1 = car_1_img.resize((int(car_1_img.width*Car.orig_img_ratio),
+                                                  int(car_1_img.height*Car.orig_img_ratio)))
+                rotated_image = resized_car_1.rotate(90 * (int(i)-1), expand=True)
+                images[i].append(ImageTk.PhotoImage(rotated_image))
         return images

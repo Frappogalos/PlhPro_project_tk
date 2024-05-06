@@ -12,7 +12,6 @@ class Pedestrian:
                                      "3": (1882, 720), "4": (1060, -40)}
     speed = 3
     speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0), "4": (0, speed)}
-    ped_directions = 4
     num_of_person_images = 2
     num_of_steps = 2
     ped_img_file = f"../images/pedestrians/Person_#_$.png"
@@ -137,7 +136,7 @@ class Pedestrian:
         # Δημιουργία λεξικού με τις φωτογραφίες των πεζών ανάλογα με την κατεύθυνση
         # του κάθε ένα
         images = {}
-        for x in range(0, Pedestrian.ped_directions):
+        for x in range(0, len(Pedestrian.speed_by_direction)):
             ped_images = {}
             for i in range(0, Pedestrian.num_of_person_images):
                 ped_images[str(i + 1)] = {}
