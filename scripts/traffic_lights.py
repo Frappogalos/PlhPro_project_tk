@@ -63,9 +63,13 @@ class TrafficLights:
 		"""Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
 		με την κατεύθυνση του κάθε ενός"""
 		images = {}
+		orig_img_ratio = 0.7
 		for x in TrafficLights.lights_positions.keys():
 			dir_images = {}
 			for i in TrafficLights.light_phases:
-				dir_images[i] = ImageTk.PhotoImage(Image.open(TrafficLights.light_img_file.replace("#", i)).rotate(90 * int(x), expand=True))
+				tr_image = Image.open(TrafficLights.light_img_file.replace("#", i))
+				resized_image = tr_image.resize((int(tr_image.width*orig_img_ratio), int(tr_image.height*orig_img_ratio)))
+				rotated_image = resized_image.rotate(90 * int(x), expand=True)
+				dir_images[i] = ImageTk.PhotoImage(rotated_image)
 			images[x] = dir_images
 		return images
