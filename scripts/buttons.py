@@ -20,7 +20,7 @@ class OpButton:
         self.current_image = self.images[self.images.index(self.current_image)-1]
         self.button.config(image=self.current_image)
         self.operation = OpButton.modes[OpButton.modes.index(self.operation)-1]
-        TrafficLights.current_mode = self.operation
+        TrafficLights.initialise(self.operation)
 
 
 class PauseButton:
