@@ -25,6 +25,7 @@ class OpButton:
 
 class PauseButton:
     """Κλάση για τη δημιουργία κουμπιού παύσης της προσομοίωσης"""
+    # TODO check if needs to exist
     def __init__(self, x, y, image, window):
         self.posx = x
         self.posy = y

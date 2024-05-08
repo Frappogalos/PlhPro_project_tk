@@ -132,6 +132,7 @@ class TrafficLights:
         return images
 
     class PedestrianLights:
+        # TODO create pedestrian lights
         lights_positions = {"1": ((830, 600), ()), "2": ((910, 670), ()), "3": ((1010, 470), ()), "4": ((), ())}
         light_phases = ["off", "green", "red"]
         light_img_file = "../images/traffic_lights/pedestrian_#.png"

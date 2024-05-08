@@ -14,6 +14,8 @@ class Pedestrian:
     speed_by_direction = {"1": (speed, 0), "2": (0, -speed), "3": (-speed, 0), "4": (0, speed)}
     num_of_person_images = 2
     num_of_steps = 2
+    distance_ped = 50
+    frames_to_next_step = 9
     ped_img_file = f"../images/pedestrians/Person_#_$.png"
     orig_img_ratio = 0.3
     # Μέγιστος αριθμός πεζών που μπορούν να υπάρχουν ταυτόχρονα
@@ -28,7 +30,8 @@ class Pedestrian:
         self.direction = direction
         self.speed = Pedestrian.speed_by_direction[str(self.direction)]
         self.moving = True
-        self.stopped = None
+        self.stopped = {"<class 'cars.Car'>": None, "<class 'traffic_lights.TrafficLights'>": None,
+                        "<class 'pedestrians.Pedestrian'>": None}
         self.step = 0
         self.frames = 0
         self.x = Pedestrian.pedestrian_starting_positions[str(self.direction)][0]
@@ -39,36 +42,34 @@ class Pedestrian:
         Pedestrian.ped_dict[str(self.direction)].append(self)
         Pedestrian.total_ped_list.append(self)
         self.move_ped()
-        if self.spawn_collision():
-            self.delete_ped()
+
+    def find_distance(self, entity):
+        return math.sqrt(abs(self.x - entity.x)**2 + abs(self.y - entity.y)**2)
+
+    def stop_ped(self, entity):
+        self.moving = False
+        self.speed = (0, 0)
+        self.stopped[str(type(entity))] = entity
+        self.canvas.itemconfig(self.pedestrian, image=self.image["st"])
+
+    def restart_movement(self, entity_type):
+        self.moving = True
+        self.speed = Pedestrian.speed_by_direction[str(self.direction)]
+        self.stopped[entity_type] = None
 
     def move_ped(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε πεζού"""
+        # TODO moving and collision logic
         if self.moving:
             # Εφόσον ο πεζός κινείται ελέγχει την απόσταση από τον προπορευόμενο πεζό
             # και αν αυτή είναι κάτω από την οριζόμενη τιμή ακινητοποιείται
             for ped in Pedestrian.ped_dict[str(self.direction)]:
                 if self != ped and self.direction == ped.direction:
-                    if self.direction == 1 and 0 < ped.x - self.x < 120:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = ped
-                        self.root.after(30, self.move_ped)
-                    elif self.direction == 3 and 0 < self.x - ped.x < 120:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = ped
-                        self.root.after(30, self.move_ped)
-                    elif self.direction == 2 and 0 < self.y - ped.y < 120:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = ped
-                        self.root.after(30, self.move_ped)
-                    elif self.direction == 4 and 0 < ped.y - self.y < 120:
-                        self.moving = False
-                        self.speed = (0, 0)
-                        self.stopped = ped
-                        self.root.after(30, self.move_ped)
+                    if (self.direction == 1 and 0 < ped.x - self.x < Pedestrian.distance_ped or
+                            self.direction == 3 and 0 < self.x - ped.x < Pedestrian.distance_ped or
+                            self.direction == 2 and 0 < self.y - ped.y < Pedestrian.distance_ped or
+                            self.direction == 4 and 0 < ped.y - self.y < Pedestrian.distance_ped):
+                        self.stop_ped(ped)
         if self.moving:
             # Εφόσον κινείται ο πεζός αν είναι εντός των ορίων του καμβά συνεχίζει την κίνησή του
             # αλλιώς διαγράφεται
@@ -77,7 +78,7 @@ class Pedestrian:
                 self.x += self.speed[0]
                 self.y += self.speed[1]
                 self.frames += 1
-                if self.frames == 9:
+                if self.frames == Pedestrian.frames_to_next_step:
                     self.step += 1
                     self.frames = 0
                 if self.step == Pedestrian.num_of_steps:
@@ -87,32 +88,17 @@ class Pedestrian:
             else:
                 self.delete_ped()
         else:
-            # Εφόσον είναι σταματημένος ο πεζός, αν μεγαλώσει η απόσταση από τον πεζό για το
-            # οποίο σταμάτησε ξεκινάει πάλι να κινείται
-            if (self.direction == 1 or self.direction == 3) and abs(self.x - self.stopped.x) > 180:
-                self.moving = True
-                self.speed = Pedestrian.speed_by_direction[str(self.direction)]
-                self.stopped = None
-                self.root.after(500, self.move_ped)
-            elif (self.direction == 2 or self.direction == 4) and abs(self.y - self.stopped.y) > 180:
-                self.moving = True
-                self.speed = Pedestrian.speed_by_direction[str(self.direction)]
-                self.stopped = None
-                self.root.after(500, self.move_ped)
+            for x, y in self.stopped.items():
+                if x == "<class 'pedestrians.Pedestrian'>" and y:
+                    if self.find_distance(self.stopped[x]) > Pedestrian.distance_ped + 50:
+                        self.restart_movement(x)
+        self.root.after(30, self.move_ped)
 
     def delete_ped(self):
         """Μέθοδος η οποία διαγράφει τον πεζό εφόσον εξέλθει των ορίων του καμβά"""
         self.canvas.delete(self.pedestrian)
         Pedestrian.ped_dict[str(self.direction)].remove(self)
         Pedestrian.total_ped_list.remove(self)
-
-    def spawn_collision(self):
-        """Μέθοδος η οποία ελέγχει αν ο πεζός που θα δημιουργηθεί θα συγκρουσθεί με ήδη
-        υπάρχον πεζό"""
-        for ped in Pedestrian.ped_dict[str(self.direction)]:
-            if ped != self and math.sqrt(abs(self.x - ped.x)**2 + abs(self.y - ped.y)**2) < 40:
-                return True
-        return False
 
     @classmethod
     def pedestrian_creator(cls, ped_images, canvas, root):
