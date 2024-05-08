@@ -24,6 +24,7 @@ class TrafficLights:
             self.phase = "red"
         self.x = TrafficLights.lights_positions[str(self.direction)][0]
         self.y = TrafficLights.lights_positions[str(self.direction)][1]
+        self.ped_lights = []
         self.root = window
         self.canvas = canvas
         self.tr_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
@@ -74,11 +75,13 @@ class TrafficLights:
                 else:
                     val.command = "off"
         elif TrafficLights.current_mode == "normal":
-            if TrafficLights.tr_lights_main_sec["main"][0].phase == "green" and time.time() - TrafficLights.time_on > 30:
+            if (TrafficLights.tr_lights_main_sec["main"][0].phase == "green" and
+                    time.time() - TrafficLights.time_on > 30):
                 TrafficLights.time_on = time.time()
                 for val in TrafficLights.tr_lights_main_sec["main"]:
                     val.command = "orange"
-            elif TrafficLights.tr_lights_main_sec["main"][0].phase == "orange" and time.time() - TrafficLights.time_on > 3:
+            elif (TrafficLights.tr_lights_main_sec["main"][0].phase == "orange" and
+                  time.time() - TrafficLights.time_on > 3):
                 TrafficLights.time_on = time.time()
                 TrafficLights.previous_red = "secondary"
                 for val in TrafficLights.tr_lights_main_sec["main"]:
@@ -90,7 +93,8 @@ class TrafficLights:
                 TrafficLights.time_on = time.time()
                 for val in TrafficLights.tr_lights_main_sec["secondary"]:
                     val.command = "green"
-            elif TrafficLights.tr_lights_main_sec["main"][0].phase == "red" and time.time() - TrafficLights.time_on > 15:
+            elif TrafficLights.tr_lights_main_sec["main"][
+                0].phase == "red" and time.time() - TrafficLights.time_on > 15:
                 TrafficLights.time_on = time.time()
                 for val in TrafficLights.tr_lights_main_sec["secondary"]:
                     val.command = "orange"
@@ -124,31 +128,54 @@ class TrafficLights:
             dir_images = {}
             for i in TrafficLights.light_phases:
                 tr_image = Image.open(TrafficLights.light_img_file.replace("#", i))
-                resized_image = tr_image.resize((int(tr_image.width*TrafficLights.orig_img_ratio),
-                                                 int(tr_image.height*TrafficLights.orig_img_ratio)))
-                rotated_image = resized_image.rotate(90 * (int(x)-2), expand=True)
+                resized_image = tr_image.resize((int(tr_image.width * TrafficLights.orig_img_ratio),
+                                                 int(tr_image.height * TrafficLights.orig_img_ratio)))
+                rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
                 dir_images[i] = ImageTk.PhotoImage(rotated_image)
             images[x] = dir_images
         return images
 
-    class PedestrianLights:
-        # TODO create pedestrian lights
-        lights_positions = {"1": ((830, 600), ()), "2": ((910, 670), ()), "3": ((1010, 470), ()), "4": ((), ())}
-        light_phases = ["off", "green", "red"]
-        light_img_file = "../images/traffic_lights/pedestrian_#.png"
-        orig_img_ratio = 0.8
-        tr_lights_dict = {}
 
-        def __init__(self, images, direction, phase, canvas, window):
-            self.images = images
-            self.direction = direction
-            self.phase = phase
-            self.x1 = TrafficLights.lights_positions[str(self.direction)][0][0]
-            self.y1 = TrafficLights.lights_positions[str(self.direction)][0][1]
-            self.x2 = TrafficLights.lights_positions[str(self.direction)][1][0]
-            self.y2 = TrafficLights.lights_positions[str(self.direction)][1][1]
-            self.root = window
-            self.canvas = canvas
-            self.ped_light = self.canvas.create_image(self.x1, self.y1, image=self.images[self.phase])
-            self.ped_light = self.canvas.create_image(self.x2, self.y2, image=self.images[self.phase])
-            TrafficLights.tr_lights_dict[str(self.direction)] = self
+class PedestrianLights:
+    # TODO create pedestrian lights
+    lights_positions = {"1": ((830, 600), ()), "2": ((910, 670), ()), "3": ((1010, 470), ()), "4": ((), ())}
+    light_phases = ["off", "green", "red"]
+    light_img_file = "../images/traffic_lights/pedestrian_#.png"
+    orig_img_ratio = 0.8
+    tr_lights_dict = {}
+
+    def __init__(self, images, direction, phase, canvas, window):
+        self.images = images
+        self.direction = direction
+        self.phase = phase
+        self.x1 = PedestrianLights.lights_positions[str(self.direction)][0][0]
+        self.y1 = PedestrianLights.lights_positions[str(self.direction)][0][1]
+        self.x2 = PedestrianLights.lights_positions[str(self.direction)][1][0]
+        self.y2 = PedestrianLights.lights_positions[str(self.direction)][1][1]
+        self.root = window
+        self.canvas = canvas
+        self.ped_light = self.canvas.create_image(self.x1, self.y1, image=self.images[self.phase])
+        self.ped_light = self.canvas.create_image(self.x2, self.y2, image=self.images[self.phase])
+        PedestrianLights.tr_lights_dict[str(self.direction)] = self
+
+    @classmethod
+    def traffic_lights_creator(cls, lights_images, canvas, root):
+        """Μέθοδος η οποία δημιουργεί τους φωτεινούς σηματοδότες"""
+        for i in PedestrianLights.lights_positions.keys():
+            PedestrianLights(images=lights_images[i], direction=int(i), canvas=canvas, window=root)
+
+    @classmethod
+    def create_images(cls):
+        """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
+        με την κατεύθυνση του κάθε ενός"""
+        images = {}
+        for x in PedestrianLights.lights_positions.keys():
+            dir_images = {}
+            for i in PedestrianLights.light_phases:
+                tr_image = Image.open(PedestrianLights.light_img_file.replace("#", i))
+                resized_image = tr_image.resize((int(tr_image.width * PedestrianLights.orig_img_ratio),
+                                                 int(tr_image.height * PedestrianLights.orig_img_ratio)))
+                rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
+                dir_images[i] = ImageTk.PhotoImage(rotated_image)
+            images[x] = dir_images
+        return images

@@ -59,7 +59,7 @@ class Pedestrian:
 
     def move_ped(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε πεζού"""
-        # TODO moving and collision logic
+        # TODO moving and collision logic for traffic lights and cars
         if self.moving:
             # Εφόσον ο πεζός κινείται ελέγχει την απόσταση από τον προπορευόμενο πεζό
             # και αν αυτή είναι κάτω από την οριζόμενη τιμή ακινητοποιείται
