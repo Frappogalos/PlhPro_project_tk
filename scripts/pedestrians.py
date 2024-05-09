@@ -31,7 +31,7 @@ class Pedestrian:
         self.direction = direction
         self.speed = Pedestrian.speed_by_direction[str(self.direction)]
         self.moving = True
-        self.stopped = {"<class 'cars.Car'>": None, "<class 'traffic_lights.TrafficLights'>": None,
+        self.stopped = {"<class 'cars.Car'>": None, "<class 'traffic_lights.PedestrianLights'>": None,
                         "<class 'pedestrians.Pedestrian'>": None}
         self.step = 0
         self.frames = 0
@@ -88,44 +88,44 @@ class Pedestrian:
 
     def move_ped(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε πεζού"""
-        # TODO fix restart, not working
-        if self.moving:
-            if self.front_ped_collision() or self.check_traffic_lights():
-                for i in self.stopped.values():
-                    if i:
-                        self.stop_movement(i)
-            elif -100 < self.x < 1932 and -100 < self.y < 1180:
-                self.canvas.move(self.pedestrian, self.speed[0], self.speed[1])
-                self.x += self.speed[0]
-                self.y += self.speed[1]
-                self.frames += 1
-                if self.frames == Pedestrian.frames_to_next_step:
-                    self.step += 1
-                    self.frames = 0
-                if self.step == Pedestrian.num_of_steps:
-                    self.step = 0
-                self.canvas.itemconfig(self.pedestrian, image=self.image[str(self.step)])
+        if self in Pedestrian.total_ped_list:
+            if self.moving:
+                if self.front_ped_collision() or self.check_traffic_lights():
+                    for i in self.stopped.values():
+                        if i:
+                            self.stop_movement(i)
+                elif -100 < self.x < 1932 and -100 < self.y < 1180:
+                    self.canvas.move(self.pedestrian, self.speed[0], self.speed[1])
+                    self.x += self.speed[0]
+                    self.y += self.speed[1]
+                    self.frames += 1
+                    if self.frames == Pedestrian.frames_to_next_step:
+                        self.step += 1
+                        self.frames = 0
+                    if self.step == Pedestrian.num_of_steps:
+                        self.step = 0
+                    self.canvas.itemconfig(self.pedestrian, image=self.image[str(self.step)])
+                else:
+                    self.delete_ped()
             else:
-                self.delete_ped()
-        else:
-            for x, y in self.stopped.items():
-                if x == "<class 'pedestrians.Pedestrian'>" and y:
-                    if self.find_distance(self.stopped[x]) > Pedestrian.distance_ped + 50:
-                        self.restart_movement(x)
-                if x == "<class 'traffic_lights.TrafficLights'>" and y:
-                    if TrafficLights.current_mode == "normal" and y.phase == "green":
-                        self.restart_movement(x)
-                    elif TrafficLights.current_mode == "night":
-                        leave = True
-                        for key, car_list_1 in Car.cars_dict.items():
-                            if int(key) % 2 != self.direction % 2:
-                                for car_list_2 in car_list_1:
-                                    for i in car_list_2:
-                                        if self.find_distance(i) < 400:
-                                            leave = False
-                        self.leave_on_off = leave
-                        self.restart_movement(x)
-        self.root.after(30, self.move_ped)
+                for x, y in self.stopped.items():
+                    if x == "<class 'pedestrians.Pedestrian'>" and y:
+                        if self.find_distance(self.stopped[x]) > Pedestrian.distance_ped + 50:
+                            self.restart_movement(x)
+                    if x == "<class 'traffic_lights.PedestrianLights'>" and y:
+                        if TrafficLights.current_mode == "normal" and y.phase == "green":
+                            self.restart_movement(x)
+                        elif TrafficLights.current_mode == "night":
+                            leave = True
+                            for key, car_list_1 in Car.cars_dict.items():
+                                if int(key) % 2 != self.direction % 2:
+                                    for car_list_2 in car_list_1:
+                                        for i in car_list_2:
+                                            if self.find_distance(i) < 600:
+                                                leave = False
+                            self.leave_on_off = leave
+                            self.restart_movement(x)
+            self.root.after(30, self.move_ped)
 
     def delete_ped(self):
         """Μέθοδος η οποία διαγράφει τον πεζό εφόσον εξέλθει των ορίων του καμβά"""
