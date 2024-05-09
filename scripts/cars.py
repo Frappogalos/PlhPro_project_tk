@@ -76,38 +76,39 @@ class Car:
 
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
-        if self.moving:
-            if self.front_car_collision() or self.check_traffic_lights():
-                for i in self.stopped.values():
-                    if i:
-                        self.stop_car(i)
-            elif -200 < self.x < 2000 and -200 < self.y < 1230:
-                self.canvas.move(self.car, self.speed[0], self.speed[1])
-                self.x += self.speed[0]
-                self.y += self.speed[1]
+        if self in Car.total_car_list:
+            if self.moving:
+                if self.front_car_collision() or self.check_traffic_lights():
+                    for i in self.stopped.values():
+                        if i:
+                            self.stop_car(i)
+                elif -200 < self.x < 2000 and -200 < self.y < 1230:
+                    self.canvas.move(self.car, self.speed[0], self.speed[1])
+                    self.x += self.speed[0]
+                    self.y += self.speed[1]
+                else:
+                    self.delete_car()
             else:
-                self.delete_car()
-        else:
-            for x, y in self.stopped.items():
-                if x == "<class 'cars.Car'>" and y:
-                    if self.find_distance(self.stopped[x]) > Car.front_car_min_distance + 50:
-                        self.restart_movement(x)
-                if x == "<class 'traffic_lights.TrafficLights'>" and y:
-                    if TrafficLights.current_mode == "normal" and y.phase == "green":
-                        self.restart_movement(x)
-                    elif TrafficLights.current_mode == "night" and self.direction != 2:
-                        self.restart_movement(x)
-                    elif TrafficLights.current_mode == "night":
-                        leave = True
-                        for key, car_list_1 in Car.cars_dict.items():
-                            if int(key) % 2 != self.direction % 2:
-                                for car_list_2 in car_list_1:
-                                    for i in car_list_2:
-                                        if self.find_distance(i) < 400+(abs(i.y-self.y)/2):
-                                            leave = False
-                        self.leave_on_orange = leave
-                        self.restart_movement(x)
-        self.root.after(30, self.move_car)
+                for x, y in self.stopped.items():
+                    if x == "<class 'cars.Car'>" and y:
+                        if self.find_distance(self.stopped[x]) > Car.front_car_min_distance + 50:
+                            self.restart_movement(x)
+                    if x == "<class 'traffic_lights.TrafficLights'>" and y:
+                        if TrafficLights.current_mode == "normal" and y.phase == "green":
+                            self.restart_movement(x)
+                        elif TrafficLights.current_mode == "night" and self.direction != 2:
+                            self.restart_movement(x)
+                        elif TrafficLights.current_mode == "night":
+                            leave = True
+                            for key, car_list_1 in Car.cars_dict.items():
+                                if int(key) % 2 != self.direction % 2:
+                                    for car_list_2 in car_list_1:
+                                        for i in car_list_2:
+                                            if self.find_distance(i) < 400+(abs(i.y-self.y)/2):
+                                                leave = False
+                            self.leave_on_orange = leave
+                            self.restart_movement(x)
+            self.root.after(30, self.move_car)
 
     def restart_movement(self, entity_type):
         self.moving = True
@@ -116,7 +117,6 @@ class Car:
 
     def delete_car(self):
         """Μέθοδος η οποία διαγράφει το αυτοκίνητο εφόσον εξέλθει των ορίων του καμβά"""
-        self.moving = False
         Car.total_car_list.remove(self)
         Car.cars_dict[str(self.direction)][self.lane].remove(self)
         self.canvas.delete(self.car)
