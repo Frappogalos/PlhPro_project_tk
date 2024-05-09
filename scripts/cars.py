@@ -1,10 +1,7 @@
-import tkinter as tk
-import functools
 import random
 from PIL import ImageTk, Image
 import math
 from traffic_lights import TrafficLights
-from pedestrians import Pedestrian
 
 
 class Car:
@@ -72,17 +69,6 @@ class Car:
             self.stopped[str(type(tr_light))] = tr_light
         return stop_to_light
 
-    def pedestrians_crossing(self):
-        stop = False
-        for key, val in Pedestrian.ped_dict.items():
-            if int(key) % 2 != self.direction % 2:
-                for ped in val:
-                    if (ped.moving and TrafficLights.current_mode == "night" and
-                            Car.dist_to_ped[0] < self.find_distance(ped) < Car.dist_to_ped[1]):
-                        stop = True
-                        self.stopped[str(type(ped))] = ped
-        return stop
-
     def stop_car(self, entity):
         self.moving = False
         self.speed = (0, 0)
@@ -90,9 +76,8 @@ class Car:
 
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου"""
-        # TODO remove pedestrian logic and add it to pedestrian class
         if self.moving:
-            if self.front_car_collision() or self.check_traffic_lights() or self.pedestrians_crossing():
+            if self.front_car_collision() or self.check_traffic_lights():
                 for i in self.stopped.values():
                     if i:
                         self.stop_car(i)
@@ -108,7 +93,7 @@ class Car:
                     if self.find_distance(self.stopped[x]) > Car.front_car_min_distance + 50:
                         self.restart_movement(x)
                 if x == "<class 'traffic_lights.TrafficLights'>" and y:
-                    if TrafficLights.current_mode == "normal" and (y.phase == "green" or y.phase == "off"):
+                    if TrafficLights.current_mode == "normal" and y.phase == "green":
                         self.restart_movement(x)
                     elif TrafficLights.current_mode == "night" and self.direction != 2:
                         self.restart_movement(x)
@@ -121,9 +106,6 @@ class Car:
                                         if self.find_distance(i) < 400+(abs(i.y-self.y)/2):
                                             leave = False
                         self.leave_on_orange = leave
-                        self.restart_movement(x)
-                if x == "<class 'pedestrians.Pedestrian'>" and y:
-                    if self.find_distance(self.stopped[x]) > Car.dist_to_ped[1] + 50:
                         self.restart_movement(x)
         self.root.after(30, self.move_car)
 
@@ -170,7 +152,7 @@ class Car:
             lane = random.choice([0, 1])
             car_image = random.choice(car_images[str(direction)])
             Car(image=car_image, direction=direction, lane=lane, canvas=canvas, window=root)
-        root.after(4000, functools.partial(Car.car_creator, car_images, canvas, root))
+        root.after(4000, Car.car_creator, car_images, canvas, root)
 
     @classmethod
     def create_images(cls):

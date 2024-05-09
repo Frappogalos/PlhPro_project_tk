@@ -23,20 +23,20 @@ class OpButton:
         TrafficLights.initialise(self.operation)
 
 
-class PauseButton:
-    """Κλάση για τη δημιουργία κουμπιού παύσης της προσομοίωσης"""
-    # TODO check if needs to exist
-    def __init__(self, x, y, image, window):
-        self.posx = x
-        self.posy = y
-        self.image = image
-        self.operation = True
-        self.button = tk.Button(window, image=self.image, command=self.btn_click)
-        self.button.place(x=self.posx, y=self.posy)
-
-    def btn_click(self):
-        """Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
-        if self.operation:
-            self.operation = False
-        else:
-            self.operation = True
+# class PauseButton:
+#     """Κλάση για τη δημιουργία κουμπιού παύσης της προσομοίωσης"""
+#     # TODO check if needs to exist
+#     def __init__(self, x, y, image, window):
+#         self.posx = x
+#         self.posy = y
+#         self.image = image
+#         self.operation = True
+#         self.button = tk.Button(window, image=self.image, command=self.btn_click)
+#         self.button.place(x=self.posx, y=self.posy)
+#
+#     def btn_click(self):
+#         """Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
+#         if self.operation:
+#             self.operation = False
+#         else:
+#             self.operation = True
