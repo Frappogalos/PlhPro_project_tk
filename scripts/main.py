@@ -36,7 +36,7 @@ TrafficLights.traffic_lights_creator(lights_images=TrafficLights.create_images()
 # Κλήση της μεθόδου που ξεκινάει τη λειτουργία των φωτεινών σηματοδοτών
 TrafficLights.operation()
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
-Car.car_creator(images=Car.create_images(), canvas=canvas, root=root)
+Car.car_creator(car_images=Car.create_images(), canvas=canvas, root=root)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς πεζούς
 Pedestrian.pedestrian_creator(ped_images=Pedestrian.create_images(), canvas=canvas, root=root)
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών

@@ -1,5 +1,7 @@
 import tkinter as tk
 from traffic_lights import TrafficLights
+from pedestrians import Pedestrian
+from cars import Car
 
 
 class OpButton:
@@ -37,5 +39,11 @@ class PauseButton:
         """Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
         if self.operation:
             self.operation = False
+            Car.operation = False
+            Pedestrian.operation = False
+            TrafficLights.operation_mode = False
         else:
             self.operation = True
+            Car.operation = True
+            Pedestrian.operation = True
+            TrafficLights.operation_mode = True
