@@ -39,6 +39,8 @@ class Pedestrian:
     ped_dict = {"1": [], "2": [], "3": [], "4": []}
     # Λίστα με τους ενεργούς πεζούς
     total_ped_list = []
+    # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
+    # βρίσκεται σε παύση
     operation = True
 
     def __init__(self, image, direction, canvas, window):

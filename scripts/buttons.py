@@ -47,3 +47,6 @@ class PauseButton:
             Car.operation = True
             Pedestrian.operation = True
             TrafficLights.operation_mode = True
+
+    def pause_unpause(self):
+        Car.operation = Pedestrian.operation = TrafficLights.operation_mode = self.operation

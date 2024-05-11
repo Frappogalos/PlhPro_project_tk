@@ -25,9 +25,8 @@ class Car:
     dist_to_light = (150, 220)
     # Σχετική διεύθυνση των εικόνων που χρησιμοποιούνται για τα οχήματα
     car_image = "../images/cars/car_#.png"
-    # Αναλογία μεγέθους της πρωτότυπης εικόνας με αυτή που θα
-    # δημιουργηθεί για τη χρήση στο πρόγραμμα
-    orig_img_ratio = 0.1
+    # Πλάτος που πρέπει να έχει η εικόνα στο πρόγραμμα
+    target_height = 55
     # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
     cars_limit = 10
     # Λεξικό με τα ενεργά αυτοκίνητα ανάλογα με την κατεύθυνση
@@ -35,6 +34,8 @@ class Car:
     cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []]}
     # Λίστα με όλα τα ενεργά οχήματα
     total_car_list = []
+    # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
+    # βρίσκεται σε παύση
     operation = True
 
     def __init__(self, image, direction, lane, canvas, window):
@@ -216,8 +217,7 @@ class Car:
             images[i] = []
             for x in range(0, Car.num_of_car_images):
                 car_img = Image.open(Car.car_image.replace("#", str(x+1)))
-                resized_car = car_img.resize((int(car_img.width*Car.orig_img_ratio),
-                                              int(car_img.height*Car.orig_img_ratio)))
+                resized_car = car_img.resize((int(car_img.width*(Car.target_height/car_img.height)), Car.target_height))
                 rotated_image = resized_car.rotate(90 * (int(i)-1), expand=True)
                 images[i].append(ImageTk.PhotoImage(rotated_image))
         return images

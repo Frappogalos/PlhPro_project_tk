@@ -26,6 +26,8 @@ class TrafficLights:
     previous_red = "secondary"
     # Μεταβλητή με την τιμή του χρόνου που ξεκίνησε η τελευταία φάση
     time_on = time.time()
+    # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
+    # βρίσκεται σε παύση
     operation_mode = True
 
     def __init__(self, images, direction, canvas, window):
