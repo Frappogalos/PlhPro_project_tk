@@ -39,14 +39,10 @@ class PauseButton:
         """Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
         if self.operation:
             self.operation = False
-            Car.operation = False
-            Pedestrian.operation = False
-            TrafficLights.operation_mode = False
+            self.pause_unpause()
         else:
             self.operation = True
-            Car.operation = True
-            Pedestrian.operation = True
-            TrafficLights.operation_mode = True
+            self.pause_unpause()
 
     def pause_unpause(self):
         Car.operation = Pedestrian.operation = TrafficLights.operation_mode = self.operation
