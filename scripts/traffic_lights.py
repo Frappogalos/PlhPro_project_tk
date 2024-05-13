@@ -11,9 +11,8 @@ class TrafficLights:
     # Σχετική διεύθυνση των εικόνων των σηματοδοτών με το σύμβολο '#'
     # να αντικαταστείται ανάλογα με τη φάση του σηματοδότη
     light_img_file = "../images/traffic_lights/car_#.png"
-    # Αναλογία μεγέθους της πρωτότυπης εικόνας με αυτή που θα
-    # δημιουργηθεί για τη χρήση στο πρόγραμμα
-    orig_img_ratio = 0.8
+    # Ύψος που πρέπει να έχει η εικόνα στο πρόγραμμα
+    target_height = 120
     # Λεξικό με τους φωτεινούς σηματοδότες ανάλογα με την
     # κατεύθυνση της κίνησης που ελέγχουν
     tr_lights_dict = {}
@@ -181,8 +180,8 @@ class TrafficLights:
             dir_images = {}
             for i in TrafficLights.light_phases:
                 tr_image = Image.open(TrafficLights.light_img_file.replace("#", i))
-                resized_image = tr_image.resize((int(tr_image.width * TrafficLights.orig_img_ratio),
-                                                 int(tr_image.height * TrafficLights.orig_img_ratio)))
+                resized_image = tr_image.resize((int(tr_image.width*(TrafficLights.target_height/tr_image.height)),
+                                                 TrafficLights.target_height))
                 rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
                 dir_images[i] = ImageTk.PhotoImage(rotated_image)
             images[x] = dir_images
@@ -190,10 +189,10 @@ class TrafficLights:
 
 
 class PedestrianLights:
-    # TODO create pedestrian lights
     light_phases = ["off", "green", "red"]
     light_img_file = "../images/traffic_lights/pedestrian_#.png"
-    orig_img_ratio = 0.5
+    # Ύψος που πρέπει να έχει η εικόνα στο πρόγραμμα
+    target_height = 70
     ped_lights_dict = {"1": [], "2": [], "3": [], "4": []}
 
     def __init__(self, image, direction, pos, phase, canvas, window):
@@ -222,8 +221,8 @@ class PedestrianLights:
         dir_images = {}
         for i in PedestrianLights.light_phases:
             tr_image = Image.open(PedestrianLights.light_img_file.replace("#", i))
-            resized_image = tr_image.resize((int(tr_image.width * PedestrianLights.orig_img_ratio),
-                                             int(tr_image.height * PedestrianLights.orig_img_ratio)))
+            resized_image = tr_image.resize((int(tr_image.width*(PedestrianLights.target_height/tr_image.height)),
+                                             PedestrianLights.target_height))
             rotated_image = resized_image.rotate(90 * direction, expand=True)
             dir_images[i] = ImageTk.PhotoImage(rotated_image)
         return dir_images
