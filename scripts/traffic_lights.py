@@ -78,9 +78,10 @@ class TrafficLights:
         self.canvas.tag_raise(self.tr_light)
         self.root.after(100, self.change)
 
-    def pedestrian_command(self, command):
+    def pedestrian_command(self, command, seconds):
         for ped in self.ped_lights:
             ped.command = command
+            ped.timer_seconds = seconds
 
     @classmethod
     def initialise(cls, mode):
@@ -88,11 +89,11 @@ class TrafficLights:
         TrafficLights.current_mode = mode
         if mode == "night":
             for val in TrafficLights.tr_lights_main_sec["main"]:
-                val.pedestrian_command("off")
+                val.pedestrian_command("off", 0)
                 if val.command != "off":
                     val.command = "off"
             for val in TrafficLights.tr_lights_main_sec["secondary"]:
-                val.pedestrian_command("off")
+                val.pedestrian_command("off", 0)
                 if val.command != "orange":
                     val.command = "orange"
                 else:
@@ -204,9 +205,35 @@ class PedestrianLights:
         self.command = phase
         self.root = window
         self.canvas = canvas
+        self.timer_seconds = 30
         self.ped_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
+        if self.direction == 1:
+            self.t_x = self.x - 50
+            self.t_y = self.y
+        elif self.direction == 2:
+            self.t_x = self.x
+            self.t_y = self.y + 50
+        elif self.direction == 3:
+            self.t_x = self.x + 50
+            self.t_y = self.y
+        elif self.direction == 4:
+            self.t_x = self.x
+            self.t_y = self.y - 50
+        self.timer_widget = self.canvas.create_text(self.t_x, self.t_y, font=("Arial", 18), text="00",
+                                                    angle=90*self.direction, fill="white")
         PedestrianLights.ped_lights_dict[str(self.direction)].append(self)
         self.change()
+        self.timer()
+
+    def timer(self):
+        if self.timer_seconds >= 0:
+            if self.timer_seconds < 10:
+                time_text = "0" + str(self.timer_seconds)
+            else:
+                time_text = str(self.timer_seconds)
+            self.canvas.itemconfig(self.timer_widget, text=time_text)
+            self.timer_seconds -= 1
+        self.root.after(1000, self.timer)
 
     def change(self):
         """Μέθοδος που πραγματοποιεί την αλλαγή φάσης στον κάθε φωτεινό σηματοδότη"""
@@ -214,6 +241,7 @@ class PedestrianLights:
             self.phase = self.command
             self.canvas.itemconfig(self.ped_light, image=self.images[self.phase])
         self.canvas.tag_raise(self.ped_light)
+        self.canvas.tag_raise(self.timer_widget)
         self.root.after(100, self.change)
 
     @classmethod
