@@ -34,7 +34,7 @@ back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 # Κλήση της μεθόδου που δημιουργεί τους φωτεινούς σηματοδότες
 TrafficLights.traffic_lights_creator(lights_images=TrafficLights.create_images(), canvas=canvas, root=root)
 # Κλήση της μεθόδου που ξεκινάει τη λειτουργία των φωτεινών σηματοδοτών
-TrafficLights.operation()
+TrafficLights.operator()
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
 Car.car_creator(car_images=Car.create_images(), canvas=canvas, root=root)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς πεζούς
