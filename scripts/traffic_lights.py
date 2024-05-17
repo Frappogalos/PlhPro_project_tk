@@ -30,24 +30,41 @@ class TrafficLights:
     operation_mode = True
 
     def __init__(self, images, direction, canvas, window):
+        # Λεξικό με τις φωτογραφίες που θα χρησιμοποιηθούν
         self.images = images
+        # Μεταβλητή με την κατεύθυνση της κυκλοφορίας
+        # που ρυθμίζει το φανάρι
         self.direction = direction
+        # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης
+        # παίρνει και μια αρχική τιμή στις μεταβλητές που ορίζουν
+        # τη λειτουργία του
         if self.direction == 1 or self.direction == 3:
+            # Μεταβλητή με την εντολή που λαμβάνει από την κύρια
+            # συνάρτηση ελέγχου των σηματοδοτών
             self.command = "green"
+            # Μεταβλητή με την παρούσα φάση που βρίσκεται ο σηματοδότης
             self.phase = "green"
         else:
             self.command = "red"
             self.phase = "red"
+        # Μεταβλητή με τη θέση του σηματοδότη στον άξονα X
         self.x = TrafficLights.lights_positions[str(self.direction)][0]
+        # Μεταβλητή με τη θέση του σηματοδότη στον άξονα Y
         self.y = TrafficLights.lights_positions[str(self.direction)][1]
+        # Μεταβλητή του παραθύρου που έχει δημιουργηθεί
         self.root = window
+        # Μεταβλητή του καμβά που έχει δημιουργηθεί και πάνω στην οποία θα προσθέτονται
+        # τα νέα αντικείμενα
         self.canvas = canvas
+        # Δημιουργία αντικειμένου πάνω στον καμβά
         self.tr_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
+        # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγεται στην κατάλληλη θέση του λεξικού
         if self.direction == 1 or self.direction == 3:
             TrafficLights.tr_lights_main_sec["main"].append(self)
         else:
             TrafficLights.tr_lights_main_sec["secondary"].append(self)
         TrafficLights.tr_lights_dict[str(self.direction)] = self
+        # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγονται και οι ανάλογοι σηματοδότες πεζών
         if self.direction == 1:
             self.ped_lights = [PedestrianLights(image=PedestrianLights.create_images(direction=4), direction=4,
                                                 phase="off", canvas=self.canvas, window=self.root, pos=(700, 360)),
