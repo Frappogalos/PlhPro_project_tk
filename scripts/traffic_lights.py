@@ -57,23 +57,23 @@ class TrafficLights:
         # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγονται και οι ανάλογοι σηματοδότες πεζών
         if self.direction == 1:
             self.ped_lights = [PedestrianLights(image=PedestrianLights.create_images(direction=4), direction=4,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(700, 360)),
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(680, 340)),
                                PedestrianLights(image=PedestrianLights.create_images(direction=2), direction=2,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(700, 720))]
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(680, 740))]
         elif self.direction == 2:
             self.ped_lights = [PedestrianLights(image=PedestrianLights.create_images(direction=1), direction=1,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(780, 280)),
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(760, 280)),
                                PedestrianLights(image=PedestrianLights.create_images(direction=3), direction=3,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(1050, 280)),
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(1070, 280)),
                                PedestrianLights(image=PedestrianLights.create_images(direction=1), direction=1,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(780, 800)),
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(760, 800)),
                                PedestrianLights(image=PedestrianLights.create_images(direction=3), direction=3,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(1050, 800))]
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(1070, 800))]
         elif self.direction == 3:
             self.ped_lights = [PedestrianLights(image=PedestrianLights.create_images(direction=4), direction=4,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(1120, 360)),
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(1150, 340)),
                                PedestrianLights(image=PedestrianLights.create_images(direction=2), direction=2,
-                                                phase="off", canvas=self.canvas, window=self.root, pos=(1120, 720))]
+                                                phase="off", canvas=self.canvas, window=self.root, pos=(1150, 740))]
         self.change()
 
     def change(self):
@@ -111,7 +111,7 @@ class PedestrianLights:
     light_phases = ["off", "green", "red"]
     light_img_file = "../images/traffic_lights/pedestrian_#.png"
     # Ύψος που πρέπει να έχει η εικόνα στο πρόγραμμα
-    target_height = 70
+    target_height = 110
     ped_lights_dict = {"1": [], "2": [], "3": [], "4": []}
 
     def __init__(self, image, direction, pos, phase, canvas, window):
@@ -126,18 +126,18 @@ class PedestrianLights:
         self.timer_seconds = 0
         self.ped_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
         if self.direction == 1:
-            self.t_x = self.x - 50
+            self.t_x = self.x - 38
             self.t_y = self.y
         elif self.direction == 2:
             self.t_x = self.x
-            self.t_y = self.y + 50
+            self.t_y = self.y + 38
         elif self.direction == 3:
-            self.t_x = self.x + 50
+            self.t_x = self.x + 38
             self.t_y = self.y
         elif self.direction == 4:
             self.t_x = self.x
-            self.t_y = self.y - 50
-        self.timer_widget = self.canvas.create_text(self.t_x, self.t_y, font=("Arial", 18), text="00",
+            self.t_y = self.y - 38
+        self.timer_widget = self.canvas.create_text(self.t_x, self.t_y, font=("Arial", 15), text="00",
                                                     angle=90*self.direction, fill="white")
         PedestrianLights.ped_lights_dict[str(self.direction)].append(self)
         self.change()
