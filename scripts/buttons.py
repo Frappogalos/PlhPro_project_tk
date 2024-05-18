@@ -2,6 +2,7 @@ import tkinter as tk
 from traffic_lights import TrafficLights
 from pedestrians import Pedestrian
 from cars import Car
+from lights_controller import LightsController
 
 
 class OpButton:
@@ -22,7 +23,7 @@ class OpButton:
         self.current_image = self.images[self.images.index(self.current_image)-1]
         self.button.config(image=self.current_image)
         self.operation = OpButton.modes[OpButton.modes.index(self.operation)-1]
-        TrafficLights.initialise(self.operation)
+        LightsController.initialise(LightsController.controller, self.operation)
 
 
 class PauseButton:
@@ -45,4 +46,4 @@ class PauseButton:
             self.pause_unpause()
 
     def pause_unpause(self):
-        Car.operation = Pedestrian.operation = TrafficLights.operation_mode = self.operation
+        Car.operation = Pedestrian.operation = LightsController.operation_mode = self.operation

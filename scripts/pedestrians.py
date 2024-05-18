@@ -3,6 +3,7 @@ import math
 from PIL import ImageTk, Image
 from traffic_lights import TrafficLights, PedestrianLights
 from cars import Car
+from lights_controller import LightsController
 
 
 class Pedestrian:
@@ -122,12 +123,12 @@ class Pedestrian:
         stop_to_light = False
         ped_lights = PedestrianLights.ped_lights_dict[str(self.direction)]
         for light in ped_lights:
-            if (TrafficLights.current_mode == "normal" and
+            if (LightsController.current_mode == "normal" and
                     Pedestrian.dist_to_light[0] < self.axis_distance(light) < Pedestrian.dist_to_light[1] and
                     light.phase == "red"):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
-            elif (TrafficLights.current_mode == "night" and not self.leave_on_off and
+            elif (LightsController.current_mode == "night" and not self.leave_on_off and
                   Pedestrian.dist_to_light[0] < self.axis_distance(light) < Pedestrian.dist_to_light[1]):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
@@ -170,9 +171,9 @@ class Pedestrian:
                         if self.find_distance(self.stopped[x]) > Pedestrian.distance_ped + 50:
                             self.restart_movement(x)
                     if x == "<class 'traffic_lights.PedestrianLights'>" and y:
-                        if TrafficLights.current_mode == "normal" and y.phase == "green":
+                        if LightsController.current_mode == "normal" and y.phase == "green":
                             self.restart_movement(x)
-                        elif TrafficLights.current_mode == "night":
+                        elif LightsController.current_mode == "night":
                             leave = True
                             for key, car_list_1 in Car.cars_dict.items():
                                 if int(key) % 2 != self.direction % 2:

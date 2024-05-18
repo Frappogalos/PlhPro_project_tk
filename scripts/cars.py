@@ -2,6 +2,7 @@ import random
 from PIL import ImageTk, Image
 import math
 from traffic_lights import TrafficLights
+from lights_controller import LightsController
 
 
 class Car:
@@ -94,12 +95,12 @@ class Car:
         την κίνηση του αυτοκινήτου καταχωρεί τον σηματοδότη στο λεξικό stopped και επιστρέφει τιμή True"""
         stop_to_light = False
         tr_light = TrafficLights.tr_lights_dict[str(self.direction)]
-        if (TrafficLights.current_mode == "normal" and
+        if (LightsController.current_mode == "normal" and
                 Car.dist_to_light[0] < self.axis_distance(tr_light) < Car.dist_to_light[1] and
                 (tr_light.phase == "red" or tr_light.phase == "orange")):
             stop_to_light = True
             self.stopped[str(type(tr_light))] = tr_light
-        elif (TrafficLights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
+        elif (LightsController.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
               Car.dist_to_light[0] < self.axis_distance(tr_light) < Car.dist_to_light[1]):
             stop_to_light = True
             self.stopped[str(type(tr_light))] = tr_light
@@ -142,11 +143,11 @@ class Car:
                         if self.find_distance(self.stopped[x]) > Car.front_car_min_distance + 50:
                             self.restart_movement(x)
                     if x == "<class 'traffic_lights.TrafficLights'>" and y:
-                        if TrafficLights.current_mode == "normal" and y.phase == "green":
+                        if LightsController.current_mode == "normal" and y.phase == "green":
                             self.restart_movement(x)
-                        elif TrafficLights.current_mode == "night" and self.direction != 2:
+                        elif LightsController.current_mode == "night" and self.direction != 2:
                             self.restart_movement(x)
-                        elif TrafficLights.current_mode == "night":
+                        elif LightsController.current_mode == "night":
                             leave = True
                             for key, car_list_1 in Car.cars_dict.items():
                                 if int(key) % 2 != self.direction % 2:

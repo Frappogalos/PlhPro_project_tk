@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from cars import Car
 from pedestrians import Pedestrian
 from traffic_lights import TrafficLights
+from lights_controller import LightsController
 
 # Σχετικές διευθύνσεις που βρίσκονται οι φωτογραφίες
 # του φόντου και του κουμπιού λειτουργίας των
@@ -24,7 +25,7 @@ pause_img = ImageTk.PhotoImage(Image.open(PAUSE_IMAGE))
 on_off_red = ImageTk.PhotoImage(Image.open(ON_OFF_RED))
 on_off_green = ImageTk.PhotoImage(Image.open(ON_OFF_GRN))
 
-# Μέγεθος παραθύρου
+# Μέγεθος παραθύρου'
 root.geometry(f"{bg.width()}x{bg.height()}")
 # Δημιουργία καμβά όπου θα τρέχει η προσομοίωση
 canvas = tk.Canvas(root, width=bg.width(), height=bg.height())
@@ -34,7 +35,7 @@ back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 # Κλήση της μεθόδου που δημιουργεί τους φωτεινούς σηματοδότες
 TrafficLights.traffic_lights_creator(lights_images=TrafficLights.create_images(), canvas=canvas, root=root)
 # Κλήση της μεθόδου που ξεκινάει τη λειτουργία των φωτεινών σηματοδοτών
-TrafficLights.operator()
+LightsController()
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
 Car.car_creator(car_images=Car.create_images(), canvas=canvas, root=root)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς πεζούς
