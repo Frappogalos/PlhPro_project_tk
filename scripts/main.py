@@ -10,7 +10,6 @@ from lights_controller import LightsController
 # του φόντου
 BG_IMAGE = "../images/double_intersection.jpg"
 
-
 # Δημιουργία παραθύρου
 root = tk.Tk()
 # Τίτλος παραθύρου
