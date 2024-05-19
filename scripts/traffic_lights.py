@@ -18,6 +18,9 @@ class TrafficLights:
     # Λεξικό που αποθηκεύει ξεχωριστά τους σηματοδότες της κύριας
     # οδού με αυτούς της δευτερεύουσας
     tr_lights_main_sec = {"main": [], "secondary": []}
+    # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
+    # βρίσκεται σε παύση
+    operation_mode = True
 
     def __init__(self, images, direction, canvas, window):
         # Λεξικό με τις φωτογραφίες που θα χρησιμοποιηθούν
@@ -144,7 +147,7 @@ class PedestrianLights:
         self.timer()
 
     def timer(self):
-        if self.phase != "off":
+        if TrafficLights.operation_mode:
             if self.timer_seconds >= 0:
                 if self.timer_seconds < 10:
                     time_text = "0" + str(self.timer_seconds)
