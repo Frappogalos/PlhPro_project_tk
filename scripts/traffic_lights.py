@@ -2,48 +2,27 @@ from PIL import Image, ImageTk
 
 
 class TrafficLights:
-    # Λεξικό με τις συντεταγμένες που θα τοποθετηθούν τα φανάρια
-    # ανάλογα με την κατεύθυνση κίνησης που ελέγχουν
-    lights_positions = {"1": (830, 600), "2": (910, 670), "3": (1010, 470)}
     # Λίστα με τις φάσεις λειτουργίας των σηματοδοτών
     light_phases = ["off", "green", "orange", "red"]
-    # Σχετική διεύθυνση των εικόνων των σηματοδοτών με το σύμβολο '#'
-    # να αντικαταστείται ανάλογα με τη φάση του σηματοδότη
-    light_img_file = "../images/traffic_lights/car_#.png"
-    # Ύψος που πρέπει να έχει η εικόνα στο πρόγραμμα
-    target_height = 120
-    # Λεξικό με τους φωτεινούς σηματοδότες ανάλογα με την
-    # κατεύθυνση της κίνησης που ελέγχουν
-    tr_lights_dict = {}
-    # Λεξικό που αποθηκεύει ξεχωριστά τους σηματοδότες της κύριας
-    # οδού με αυτούς της δευτερεύουσας
-    tr_lights_main_sec = {"main": [], "secondary": []}
-    # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
-    # βρίσκεται σε παύση
-    operation_mode = True
 
-    def __init__(self, images, direction, canvas, window):
+    def __init__(self, images, direction, position, canvas, window):
+        # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
+        # βρίσκεται σε παύση
+        self.operation_mode = True
         # Λεξικό με τις φωτογραφίες που θα χρησιμοποιηθούν
         self.images = images
         # Μεταβλητή με την κατεύθυνση της κυκλοφορίας
         # που ρυθμίζει το φανάρι
         self.direction = direction
-        # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης
-        # παίρνει και μια αρχική τιμή στις μεταβλητές που ορίζουν
-        # τη λειτουργία του
-        if self.direction == 1 or self.direction == 3:
-            # Μεταβλητή με την εντολή που λαμβάνει από την κύρια
-            # συνάρτηση ελέγχου των σηματοδοτών
-            self.command = "green"
-            # Μεταβλητή με την παρούσα φάση που βρίσκεται ο σηματοδότης
-            self.phase = "green"
-        else:
-            self.command = "red"
-            self.phase = "red"
+        # Μεταβλητή με την εντολή που λαμβάνει από την κύρια
+        # συνάρτηση ελέγχου των σηματοδοτών
+        self.command = "off"
+        # Μεταβλητή με την παρούσα φάση που βρίσκεται ο σηματοδότης
+        self.phase = "off"
         # Μεταβλητή με τη θέση του σηματοδότη στον άξονα X
-        self.x = TrafficLights.lights_positions[str(self.direction)][0]
+        self.x = position[0]
         # Μεταβλητή με τη θέση του σηματοδότη στον άξονα Y
-        self.y = TrafficLights.lights_positions[str(self.direction)][1]
+        self.y = position[1]
         # Μεταβλητή του παραθύρου που έχει δημιουργηθεί
         self.root = window
         # Μεταβλητή του καμβά που έχει δημιουργηθεί και πάνω στην οποία θα προσθέτονται
@@ -51,12 +30,6 @@ class TrafficLights:
         self.canvas = canvas
         # Δημιουργία αντικειμένου πάνω στον καμβά
         self.tr_light = self.canvas.create_image(self.x, self.y, image=self.images[self.phase])
-        # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγεται στην κατάλληλη θέση του λεξικού
-        if self.direction == 1 or self.direction == 3:
-            TrafficLights.tr_lights_main_sec["main"].append(self)
-        else:
-            TrafficLights.tr_lights_main_sec["secondary"].append(self)
-        TrafficLights.tr_lights_dict[str(self.direction)] = self
         # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγονται και οι ανάλογοι σηματοδότες πεζών
         if self.direction == 1:
             self.ped_lights = [PedestrianLights(image=PedestrianLights.create_images(direction=4), direction=4,
@@ -87,28 +60,6 @@ class TrafficLights:
         self.canvas.tag_raise(self.tr_light)
         self.root.after(100, self.change)
 
-    @classmethod
-    def traffic_lights_creator(cls, lights_images, canvas, root):
-        """Μέθοδος η οποία δημιουργεί τους φωτεινούς σηματοδότες"""
-        for i in TrafficLights.lights_positions.keys():
-            TrafficLights(images=lights_images[i], direction=int(i), canvas=canvas, window=root)
-
-    @classmethod
-    def create_images(cls):
-        """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
-        με την κατεύθυνση του κάθε ενός"""
-        images = {}
-        for x in TrafficLights.lights_positions.keys():
-            dir_images = {}
-            for i in TrafficLights.light_phases:
-                tr_image = Image.open(TrafficLights.light_img_file.replace("#", i))
-                resized_image = tr_image.resize((int(tr_image.width*(TrafficLights.target_height/tr_image.height)),
-                                                 TrafficLights.target_height))
-                rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
-                dir_images[i] = ImageTk.PhotoImage(rotated_image)
-            images[x] = dir_images
-        return images
-
 
 class PedestrianLights:
     light_phases = ["off", "green", "red"]
@@ -121,6 +72,7 @@ class PedestrianLights:
         self.images = image
         self.direction = direction
         self.phase = phase
+        self.operation_mode = True
         self.x = pos[0]
         self.y = pos[1]
         self.command = phase
@@ -147,7 +99,7 @@ class PedestrianLights:
         self.timer()
 
     def timer(self):
-        if TrafficLights.operation_mode:
+        if self.operation_mode:
             if self.timer_seconds >= 0:
                 if self.timer_seconds < 10:
                     time_text = "0" + str(self.timer_seconds)

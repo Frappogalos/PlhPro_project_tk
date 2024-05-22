@@ -1,8 +1,6 @@
 import random
 from PIL import ImageTk, Image
 import math
-from traffic_lights import TrafficLights
-from lights_controller import LightsController
 
 
 class Car:
@@ -39,7 +37,7 @@ class Car:
     # βρίσκεται σε παύση
     operation = True
 
-    def __init__(self, image, direction, lane, canvas, window):
+    def __init__(self, image, direction, lane, canvas, window, lights):
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
         # Εικόνα που χρησιμοποιεί το αυτοκίνητο
         self.image = image
@@ -47,6 +45,8 @@ class Car:
         self.direction = direction
         # Λορίδα κυκλοφορίας
         self.lane = lane
+
+        self.lights = lights
         # Ταχύτητα του αυτοκινήτου, δηλαδή σε πόσα pixel κινείται σε κάθε άξονα σε κάθε μετακίνηση
         self.speed = Car.speed_by_direction[str(self.direction)]
         # Μεταβλητή boolean για το αν το αυτοκίνητο κινείται ή είναι σταματημένο
@@ -94,13 +94,13 @@ class Car:
         """Μέθοδος που ελέγχει την κατάσταση των φωτεινών σηματοδοτών και αν αυτή δεν επιτρέπει
         την κίνηση του αυτοκινήτου καταχωρεί τον σηματοδότη στο λεξικό stopped και επιστρέφει τιμή True"""
         stop_to_light = False
-        tr_light = TrafficLights.tr_lights_dict[str(self.direction)]
-        if (LightsController.current_mode == "normal" and
+        tr_light = self.lights.tr_lights_dict[str(self.direction)]
+        if (self.lights.current_mode == "normal" and
                 Car.dist_to_light[0] < self.axis_distance(tr_light) < Car.dist_to_light[1] and
                 (tr_light.phase == "red" or tr_light.phase == "orange")):
             stop_to_light = True
             self.stopped[str(type(tr_light))] = tr_light
-        elif (LightsController.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
+        elif (self.lights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
               Car.dist_to_light[0] < self.axis_distance(tr_light) < Car.dist_to_light[1]):
             stop_to_light = True
             self.stopped[str(type(tr_light))] = tr_light
@@ -143,11 +143,11 @@ class Car:
                         if self.find_distance(self.stopped[x]) > Car.front_car_min_distance + 50:
                             self.restart_movement(x)
                     if x == "<class 'traffic_lights.TrafficLights'>" and y:
-                        if LightsController.current_mode == "normal" and y.phase == "green":
+                        if self.lights.current_mode == "normal" and y.phase == "green":
                             self.restart_movement(x)
-                        elif LightsController.current_mode == "night" and self.direction != 2:
+                        elif self.lights.current_mode == "night" and self.direction != 2:
                             self.restart_movement(x)
-                        elif LightsController.current_mode == "night":
+                        elif self.lights.current_mode == "night":
                             leave = True
                             for key, car_list_1 in Car.cars_dict.items():
                                 if int(key) % 2 != self.direction % 2:
@@ -192,7 +192,7 @@ class Car:
         return dist
 
     @classmethod
-    def car_creator(cls, car_images, canvas, root):
+    def car_creator(cls, car_images, canvas, root, lights):
         """Μέθοδος η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το πέρας ενός
            συγκεκριμένου χρονικού διαστήματος"""
         if Car.operation:
@@ -206,8 +206,8 @@ class Car:
                     direction = 3
                 lane = random.choice([0, 1])
                 car_image = random.choice(car_images[str(direction)])
-                Car(image=car_image, direction=direction, lane=lane, canvas=canvas, window=root)
-        root.after(4000, Car.car_creator, car_images, canvas, root)
+                Car(image=car_image, direction=direction, lane=lane, canvas=canvas, window=root, lights=lights)
+        root.after(4000, Car.car_creator, car_images, canvas, root, lights)
 
     @classmethod
     def create_images(cls):
