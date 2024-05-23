@@ -1,9 +1,9 @@
-from traffic_lights import TrafficLights
+from traffic_lights import TrafficLights, PedestrianLights
 from PIL import Image, ImageTk
 
 
 class LightsController:
-    def __init__(self, tl_parameters, ped_parameters, canvas, root):
+    def __init__(self, tl_parameters, canvas, root):
         # Μεταβλητή του παραθύρου που έχει δημιουργηθεί
         self.root = root
         # Μεταβλητή του καμβά που έχει δημιουργηθεί και πάνω στην οποία θα προσθέτονται
@@ -19,8 +19,9 @@ class LightsController:
         # Λεξικό με τους φωτεινούς σηματοδότες ανάλογα με την
         # κατεύθυνση της κίνησης που ελέγχουν
         self.car_tl_params = tl_parameters
-        self.ped_params = ped_parameters
+        self.ped_config = tl_parameters["ped_config"]
         self.car_images = self.car_lights_images_creator()
+        self.ped_images = self.ped_lights_images_creator()
         self.tr_lights_dict = {}
         # Λεξικό που αποθηκεύει ξεχωριστά τους σηματοδότες της κύριας
         # οδού με αυτούς της δευτερεύουσας
@@ -118,10 +119,26 @@ class LightsController:
         for x in self.car_tl_params["pos"]:
             for i in x.keys():
                 tr_light = TrafficLights(images=self.car_images[i], direction=int(i), position=x[i],
+                                         tl_parameters=self.car_tl_params, ped_images=self.ped_images,
                                          canvas=self.canvas, window=self.root)
+                for light in tr_light.ped_lights:
+                    self.ped_lights_dict[str(light.direction)].append(light)
                 # Ανάλογα με την κατεύθυνση που ρυθμίζει ο σηματοδότης εισάγεται στην κατάλληλη θέση του λεξικού
                 if tr_light.direction == 1 or tr_light.direction == 3:
                     self.tr_lights_main_sec["main"].append(tr_light)
                 else:
                     self.tr_lights_main_sec["secondary"].append(tr_light)
                 self.tr_lights_dict[str(tr_light.direction)] = tr_light
+
+    def ped_lights_images_creator(self):
+        images = {}
+        for x in range(1, 5):
+            dir_images = {}
+            for i in PedestrianLights.light_phases:
+                tr_image = Image.open(self.ped_config["img"].replace("#", i))
+                resized_image = tr_image.resize((int(tr_image.width * (self.ped_config["height"] / tr_image.height)),
+                                                 self.ped_config["height"]))
+                rotated_image = resized_image.rotate(90 * x, expand=True)
+                dir_images[i] = ImageTk.PhotoImage(rotated_image)
+            images[x] = dir_images
+        return images

@@ -21,12 +21,11 @@ canvas.pack(fill="both", expand=True)
 # Ορισμός φόντου στον καμβά
 back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 # Κλήση της μεθόδου που ξεκινάει τη λειτουργία των φωτεινών σηματοδοτών
-controller = LightsController(tl_parameters=config.car_tl_params, ped_parameters=config.ped_params,
-                              canvas=canvas, root=root)
+controller = LightsController(tl_parameters=config.car_tl_params, canvas=canvas, root=root)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
 Car.car_creator(car_images=Car.create_images(), canvas=canvas, root=root, lights=controller)
 # Κλήση της συνάρτησης που δημιουργεί συνεχώς πεζούς
-Pedestrian.pedestrian_creator(ped_images=Pedestrian.create_images(), canvas=canvas, root=root)
+Pedestrian.pedestrian_creator(ped_images=Pedestrian.create_images(), canvas=canvas, root=root, lights=controller)
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών
 PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1], image=config.pause_params["img"],
             window=root, lights_controller=controller)

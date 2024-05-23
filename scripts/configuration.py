@@ -3,7 +3,7 @@
 # του φόντου
 bg_image = "../images/double_intersection.jpg"
 
-# Παράμετροι σηματοδοτών αυτοκινήτων
+# Παράμετροι σηματοδοτών αυτοκινήτων και πεζών
 car_tl_params = {"pos": [{"1": (830, 600), "2": (910, 670), "3": (1010, 470)}],
                  "img": "../images/traffic_lights/car_#.png",
                  "height": 120,
@@ -14,12 +14,10 @@ car_tl_params = {"pos": [{"1": (830, 600), "2": (910, 670), "3": (1010, 470)}],
                                    {"direction": 1, "phase": "off", "pos": (760, 800)},
                                    {"direction": 3, "phase": "off", "pos": (1070, 800)}],
                                3: [{"direction": 4, "phase": "off", "pos": (1150, 340)},
-                                   {"direction": 2, "phase": "off", "pos": (1150, 740)}]}}
-
-# Παράμετροι σηματοδοτών πεζών
-ped_params = {"phases": ["off", "green", "red"],
-              "img": "../images/traffic_lights/pedestrian_#.png",
-              "height": 110}
+                                   {"direction": 2, "phase": "off", "pos": (1150, 740)}]},
+                 "ped_config": {"img": "../images/traffic_lights/pedestrian_#.png",
+                                "height": 110,
+                                "timer_pos": {1: (-38, 0), 2: (0, 38), 3: (38, 0), 4: (0, -38)}}}
 
 # Παράμετροι κουμπιών
 # Κουμπί παύσης

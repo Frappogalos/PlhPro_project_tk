@@ -1,9 +1,7 @@
 import random
 import math
 from PIL import ImageTk, Image
-from traffic_lights import TrafficLights, PedestrianLights
 from cars import Car
-from lights_controller import LightsController
 
 
 class Pedestrian:
@@ -44,7 +42,7 @@ class Pedestrian:
     # βρίσκεται σε παύση
     operation = True
 
-    def __init__(self, image, direction, canvas, window):
+    def __init__(self, image, direction, canvas, window, lights):
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο πεζό"""
         # Λεξικό με τις εικόνες που χρησιμοποιεί ο πεζός
         self.image = image
@@ -54,6 +52,7 @@ class Pedestrian:
         self.speed = Pedestrian.speed_by_direction[str(self.direction)]
         # Μεταβλητή boolean για το αν ο πεζός κινείται ή είναι σταματημένος
         self.moving = True
+        self.lights = lights
         # Λεξικό στο οποίο καταχωρούνται τα αντικείμενα για τα οποία έχει ακινητοποιηθεί
         # ο πεζός
         self.stopped = {"<class 'cars.Car'>": None, "<class 'traffic_lights.PedestrianLights'>": None,
@@ -121,14 +120,14 @@ class Pedestrian:
         """Μέθοδος που ελέγχει την κατάσταση των φωτεινών σηματοδοτών και αν αυτή δεν επιτρέπει
         την κίνηση του πεζού καταχωρεί τον σηματοδότη στο λεξικό stopped και επιστρέφει τιμή True"""
         stop_to_light = False
-        ped_lights = PedestrianLights.ped_lights_dict[str(self.direction)]
+        ped_lights = self.lights.ped_lights_dict[str(self.direction)]
         for light in ped_lights:
-            if (LightsController.current_mode == "normal" and
+            if (self.lights.current_mode == "normal" and
                     Pedestrian.dist_to_light[0] < self.axis_distance(light) < Pedestrian.dist_to_light[1] and
                     light.phase == "red"):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
-            elif (LightsController.current_mode == "night" and not self.leave_on_off and
+            elif (self.lights.current_mode == "night" and not self.leave_on_off and
                   Pedestrian.dist_to_light[0] < self.axis_distance(light) < Pedestrian.dist_to_light[1]):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
@@ -171,9 +170,9 @@ class Pedestrian:
                         if self.find_distance(self.stopped[x]) > Pedestrian.distance_ped + 50:
                             self.restart_movement(x)
                     if x == "<class 'traffic_lights.PedestrianLights'>" and y:
-                        if LightsController.current_mode == "normal" and y.phase == "green":
+                        if self.lights.current_mode == "normal" and y.phase == "green":
                             self.restart_movement(x)
-                        elif LightsController.current_mode == "night":
+                        elif self.lights.current_mode == "night":
                             leave = True
                             for key, car_list_1 in Car.cars_dict.items():
                                 if int(key) % 2 != self.direction % 2:
@@ -207,7 +206,7 @@ class Pedestrian:
         return dist
 
     @classmethod
-    def pedestrian_creator(cls, ped_images, canvas, root):
+    def pedestrian_creator(cls, ped_images, canvas, root, lights):
         """Μέθοδος η οποία δημιουργεί συνεχώς ένα καινούριο αυτοκίνητο μετά το πέρας ενός
            συγκεκριμένου χρονικού διαστήματος"""
         if Pedestrian.operation:
@@ -222,8 +221,8 @@ class Pedestrian:
                 else:
                     direction = 4
                 ped_image = random.choice(list(ped_images[str(direction)].values()))
-                Pedestrian(image=ped_image, direction=direction, canvas=canvas, window=root)
-        root.after(4000, Pedestrian.pedestrian_creator, ped_images, canvas, root)
+                Pedestrian(image=ped_image, direction=direction, canvas=canvas, window=root, lights=lights)
+        root.after(4000, Pedestrian.pedestrian_creator, ped_images, canvas, root, lights)
 
     @classmethod
     def create_images(cls):
