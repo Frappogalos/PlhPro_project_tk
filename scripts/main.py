@@ -1,9 +1,8 @@
 import tkinter as tk
 from buttons import OpButton, PauseButton
 from PIL import ImageTk, Image
-from cars import Car
-from pedestrians import Pedestrian
 from lights_controller import LightsController
+from traffic_manager import TrafficManager
 import configuration as config
 
 # Δημιουργία παραθύρου
@@ -22,10 +21,8 @@ canvas.pack(fill="both", expand=True)
 back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 # Κλήση της μεθόδου που ξεκινάει τη λειτουργία των φωτεινών σηματοδοτών
 controller = LightsController(tl_parameters=config.car_tl_params, canvas=canvas, root=root)
-# Κλήση της συνάρτησης που δημιουργεί συνεχώς αυτοκίνητα
-Car.car_creator(car_images=Car.create_images(), canvas=canvas, root=root, lights=controller)
-# Κλήση της συνάρτησης που δημιουργεί συνεχώς πεζούς
-Pedestrian.pedestrian_creator(ped_images=Pedestrian.create_images(), canvas=canvas, root=root, lights=controller)
+traffic_manager = TrafficManager(car_params=config.cars_params, ped_params=config.peds_params, canvas=canvas, root=root,
+                                 lights=controller)
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών
 PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1], image=config.pause_params["img"],
             window=root, lights_controller=controller)
