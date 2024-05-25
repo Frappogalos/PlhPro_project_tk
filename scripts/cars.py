@@ -13,8 +13,10 @@ class Car:
         # Λορίδα κυκλοφορίας
         self.lane = lane
         self.lights = lights
+        self.car_speed = params["cars_speed"]
+        direction_speed = {"1": (self.car_speed, 0), "2": (0, -self.car_speed), "3": (-self.car_speed, 0)}
         # Η μεταβολή της θέσης του κάθε αυτοκινήτου ανάλογα με την πορεία του
-        self.speed = params["direction_speed"][str(self.direction)]
+        self.speed = direction_speed[str(self.direction)]
         self.cur_speed = self.speed
         # Μεταβλητή boolean για το αν το αυτοκίνητο κινείται ή είναι σταματημένο
         self.moving = True

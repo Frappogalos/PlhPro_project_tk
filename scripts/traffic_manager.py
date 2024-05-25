@@ -5,10 +5,12 @@ import random
 
 
 class TrafficManager:
+    """Κλάση που δημιουργεί και διαγράφει τα αυτοκίνητα και τους πεζούς"""
     def __init__(self, car_params, ped_params, canvas, root, lights):
         self.canvas = canvas
         self.root = root
         self.lights = lights
+        # Οι παράμετροι λειτουργίας των αυτοκινήτων
         self.car_params = car_params
         # Οι θέσεις όπου εμφανίζονται τα αυτοκίνητα όταν δημιουργούνται
         self.car_pos = car_params["pos"]

@@ -11,8 +11,11 @@ class Pedestrian:
         self.image = image
         # Κατεύθυνση του πεζού
         self.direction = direction
+        self.ped_speed = params["ped_speed"]
+        direction_speed = {"1": (self.ped_speed, 0), "2": (0, -self.ped_speed), "3": (-self.ped_speed, 0),
+                           "4": (0, self.ped_speed)}
         # Ταχύτητα του πεζού, δηλαδή σε πόσα pixel κινείται σε κάθε άξονα σε κάθε μετακίνηση
-        self.speed = params["direction_speed"][str(self.direction)]
+        self.speed = direction_speed[str(self.direction)]
         self.cur_speed = self.speed
         # Μεταβλητή boolean για το αν ο πεζός κινείται ή είναι σταματημένος
         self.moving = True
