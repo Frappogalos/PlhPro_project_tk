@@ -11,7 +11,6 @@ root = tk.Tk()
 root.title("Traffic Simulator")
 # Φόρτωση εικόνας φόντου
 bg = ImageTk.PhotoImage(Image.open(config.bg_image))
-
 # Μέγεθος παραθύρου
 root.geometry(f"{bg.width()}x{bg.height()}")
 # Δημιουργία καμβά όπου θα τρέχει η προσομοίωση

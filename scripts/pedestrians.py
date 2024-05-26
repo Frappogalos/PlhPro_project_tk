@@ -1,6 +1,4 @@
-import random
 import math
-from cars import Car
 
 
 class Pedestrian:
@@ -121,7 +119,7 @@ class Pedestrian:
                         self.stop_movement(i)
             # αλλιώς εάν βρίσκεται εντός των αποδεκτών συντεταγμένων του παραθύρου
             # κινείται
-            elif -120 < self.x < 2032 and -120 < self.y < 1280:
+            elif -200 < self.x < 2032 and -200 < self.y < 1280:
                 self.canvas.move(self.pedestrian, self.speed[0], self.speed[1])
                 self.x += self.speed[0]
                 self.y += self.speed[1]
