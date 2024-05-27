@@ -92,8 +92,8 @@ class LightsController:
             else:
                 val.command = "off"
 
-    def change_mode(self, mode):
-        self.operation_mode = mode
+    def change_mode(self):
+        self.operation_mode = not self.operation_mode
         for i in self.tr_lights_dict.values():
             i.operation_mode = self.operation_mode
             for x in i.ped_lights:

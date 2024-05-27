@@ -34,20 +34,9 @@ class PauseButton:
         self.posx = x
         self.posy = y
         self.image = ImageTk.PhotoImage(Image.open(image))
-        self.operation = True
         self.controller = lights_controller
-        self.button = tk.Button(window, image=self.image, command=self.btn_click)
+        self.button = tk.Button(window, image=self.image, command=self.pause_unpause)
         self.button.place(x=self.posx, y=self.posy)
 
-    def btn_click(self):
-        """Συνάρτηση για τη λειτουργία του κουμπιού όταν αυτό πατηθεί"""
-        if self.operation:
-            self.operation = False
-            self.pause_unpause()
-        else:
-            self.operation = True
-            self.pause_unpause()
-
     def pause_unpause(self):
-        Car.operation = Pedestrian.operation = self.operation
-        self.controller.change_mode(self.operation)
+        self.controller.change_mode()
