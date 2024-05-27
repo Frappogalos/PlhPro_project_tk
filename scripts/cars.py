@@ -14,7 +14,7 @@ class Car:
         # Μεταβλητή που αποθηκεύεται ο χειριστής των φαναριών
         self.lights = lights
         # Ταχύτητα αυτοκινήτου
-        self.car_speed = params["cars_speed"]
+        self.car_speed = params["default_car_speed"]
         # Μεταβολή της θέσης του αυτοκινήτου ανά άξονα Χ και Υ
         direction_speed = {"1": (self.car_speed, 0), "2": (0, -self.car_speed), "3": (-self.car_speed, 0)}
         # Η μεταβολή της θέσης του κάθε αυτοκινήτου ανάλογα με την πορεία του

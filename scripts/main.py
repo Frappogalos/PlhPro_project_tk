@@ -1,5 +1,5 @@
 import tkinter as tk
-from buttons import OpButton, PauseButton
+from buttons import OpButton, PauseButton, CarsSpeedControl
 from PIL import ImageTk, Image
 from lights_controller import LightsController
 from traffic_manager import TrafficManager
@@ -30,5 +30,9 @@ PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1],
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών
 OpButton(x=config.op_btn_params["pos"][0], y=config.op_btn_params["pos"][1],
          images=config.op_btn_params["images"], window=root, lights_controller=controller)
+CarsSpeedControl(x=config.car_spinbox["pos"][0], y=config.car_spinbox["pos"][1], window=root,
+                 traffic_manager=traffic_manager, default_speed=config.cars_params["default_car_speed"],
+                 speed_range=config.cars_params["cars_speed_range"])
 
+root.resizable(width=False, height=False)
 root.mainloop()

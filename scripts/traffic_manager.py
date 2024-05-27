@@ -102,6 +102,12 @@ class TrafficManager:
                 self.total_car_list.append(new_car)
         self.root.after(4000, self.car_creator)
 
+    def change_car_speed(self, speed):
+        for car in self.total_car_list:
+            car.speed = tuple([i if i == 0 else speed if i > 0 else -speed for i in list(car.speed)])
+            if car.moving:
+                car.cur_speed = car.speed
+
     def delete_car(self):
         """Μέθοδος η οποία καλείται συνεχώς και διαγράφει τα αυτοκίνητα
         που έχουν εξέλθει από τα όρια του παραθύρου"""

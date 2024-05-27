@@ -24,7 +24,8 @@ car_tl_params = {"pos": [{"1": (780, 700), "2": (1030, 700), "3": (1040, 380)}],
 # Παράμετροι αυτοκινήτων
 cars_params = {"pos": {"1": [(-100, 645), (-100, 570)], "2": [(870, 1180), (960, 1180)],
                        "3": [(1932, 440), (1932, 510)]},
-               "cars_speed": 6,
+               "cars_speed_range": (4, 8),
+               "default_car_speed": 6,
                "distinct_cars": 2,
                "car_min_dist": 150,
                "dist_to_light": (150, 220),
@@ -53,3 +54,6 @@ pause_params = {"pos": (1200, 50), "img": "../images/buttons/pause_btn.png"}
 # Κουμπί λειτουργίας
 op_btn_params = {"pos": (1300, 50),
                  "images": ("../images/buttons/on_off_grn.png", "../images/buttons/on_off_red.png")}
+
+# Κουμπί ελέγχου ταχύτητας οχημάτων
+car_spinbox = {"pos": (1450, 80)}
