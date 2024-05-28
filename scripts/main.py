@@ -30,9 +30,10 @@ PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1],
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών
 OpButton(x=config.op_btn_params["pos"][0], y=config.op_btn_params["pos"][1],
          images=config.op_btn_params["images"], window=root, lights_controller=controller)
+# Δημιουργία του επιλογέα ταχύτητας των αυτοκινήτων
 CarsSpeedControl(x=config.car_spinbox["pos"][0], y=config.car_spinbox["pos"][1], window=root,
                  traffic_manager=traffic_manager, default_speed=config.cars_params["default_car_speed"],
                  speed_range=config.cars_params["cars_speed_range"])
-
+# Κλείδωμα των διαστάσεων του παραθύρου
 root.resizable(width=False, height=False)
 root.mainloop()

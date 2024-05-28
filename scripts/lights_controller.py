@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 
 
 class LightsController:
+    """Κλάση που δημιουργεί και διαχειρίζεται τους φωτεινούς σηματοδότες"""
     def __init__(self, tl_parameters, canvas, root):
         # Μεταβλητή του παραθύρου που έχει δημιουργηθεί
         self.root = root
@@ -16,20 +17,28 @@ class LightsController:
         self.operation_mode = True
         # Μεταβλητή με την τρέχουσα λειτουργία των σηματοδοτών
         self.current_mode = "normal"
-        # Λεξικό με τους φωτεινούς σηματοδότες ανάλογα με την
+        # Λεξικό με τις παραμέτρους των φωτεινών σηματοδοτών ανάλογα με την
         # κατεύθυνση της κίνησης που ελέγχουν
         self.car_tl_params = tl_parameters
+        # Λεξικό με τις παραμέτρους των φωτεινών σηματοδοτών για τους πεζούς
         self.ped_config = tl_parameters["ped_config"]
+        # Λεξικό με τις εικόνες των φωτεινών σηματοδοτών για τα αυτοκίνητα
         self.car_images = self.car_lights_images_creator()
+        # Λεξικό με τις εικόνες των φωτεινών σηματοδοτών για τους πεζούς
         self.ped_images = self.ped_lights_images_creator()
+        # Λεξικό που αποθηκεύει τους φωτεινούς σηματοδότες ανά κατεύθυνση
         self.tr_lights_dict = {}
         # Λεξικό που αποθηκεύει ξεχωριστά τους σηματοδότες της κύριας
         # οδού με αυτούς της δευτερεύουσας
         self.tr_lights_main_sec = {"main": [], "secondary": []}
-
+        # Λεξικό που αποθηκεύει τους φωτεινούς σηματοδότες για τους πεζούς
+        # ανά κατεύθυνση
         self.ped_lights_dict = {"1": [], "2": [], "3": [], "4": []}
+        # Κλήση της μεθόδου για τη δημιουργία των φωτεινών σηματοδοτών
         self.traffic_lights_creator()
+        # Κλήση της μεθόδου για την αρχικοποίηση των φωτεινών σηματοδοτών
         self.initialise(self.current_mode)
+        # Κλήση της μεθόδου για τη λειτουργία των φωτεινών σηματοδοτών
         self.operator()
 
     def initialise(self, mode):

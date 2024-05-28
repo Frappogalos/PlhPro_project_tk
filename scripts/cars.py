@@ -13,9 +13,10 @@ class Car:
         self.lane = lane
         # Μεταβλητή που αποθηκεύεται ο χειριστής των φαναριών
         self.lights = lights
-        # Ταχύτητα αυτοκινήτου
+        # Προεπιλεγμένη ταχύτητα του αυτοκινήτου
         self.car_speed = params["default_car_speed"]
-        # Μεταβολή της θέσης του αυτοκινήτου ανά άξονα Χ και Υ
+        # Λεξικό με τη μεταβολή της θέσης των αυτοκινήτων στους άξονες Χ και Υ
+        # ανάλογα με την κατεύθυνση του οχήματος
         direction_speed = {"1": (self.car_speed, 0), "2": (0, -self.car_speed), "3": (-self.car_speed, 0)}
         # Η μεταβολή της θέσης του κάθε αυτοκινήτου ανάλογα με την πορεία του
         self.speed = direction_speed[str(self.direction)]
@@ -108,7 +109,7 @@ class Car:
     def move_car(self):
         """Μέθοδος όπου διαχειρίζεται την κίνηση του κάθε αυτοκινήτου, δηλαδή αν πρέπει
         να σταματήσει η κίνησή του ή να ξεκινήσει εκ νέου"""
-        # εάν κινείται,
+        # Εάν κινείται το αυτοκίνητο και ο προσομοιωτής δεν είναι σε παύση
         if self.moving and self.lights.operation_mode:
             # και εάν ένας από τους παρακάτω ελέγχους επιστρέψει True το
             # αυτοκίνητο ακινητοποιείται
@@ -119,8 +120,10 @@ class Car:
                     self.stop_car(i)
             # αλλιώς εάν βρίσκεται εντός των αποδεκτών συντεταγμένων του παραθύρου
             # κινείται
-            if -220 < self.x < 2200 and -220 < self.y < 1350:
+            if -220 < self.x < self.root.winfo_width() + 220 and -220 < self.y < self.root.winfo_height() + 220:
+                # Κίνηση της φωτογραφίας στον καμβά
                 self.canvas.move(self.car, self.cur_speed[0], self.cur_speed[1])
+                # Ενημέρωση της θέσης στους άξονες Χ και Υ
                 self.x += self.cur_speed[0]
                 self.y += self.cur_speed[1]
         # Εάν το αυτοκίνητο δεν κινείται ελέγχεται ο λόγος για τον οποίο έχει
@@ -139,9 +142,18 @@ class Car:
                     elif self.lights.current_mode == "night":
                         leave = True
                         for key, car_list_1 in self.cars_dict.items():
+                            # Έλεγχος στα οχήματα των οποίων οι πορείες διασταυρώνονται
+                            # ο έλεγχος πραγματοποιείται ελέγχοντας αν οι πορείες τους
+                            # είναι μονές οι ζυγές καθώς οι πορείες 1 και 3 είναι πάνω
+                            # στον άξονα Χ και οι πορείες 2 και 4 είναι πάνω στον
+                            # άξονα Υ
                             if int(key) % 2 != self.direction % 2:
                                 for car_list_2 in car_list_1:
                                     for i in car_list_2:
+                                        # Αν η απόσταση από το αυτοκίνητο είναι μικρότερη
+                                        # από την οριζόμενη στην οποία προστίθεται και άλλη
+                                        # απόσταση ανάλογα με την απόσταση του άξονα Υ
+                                        # μεταξύ τους
                                         if self.find_distance(i) < 400+(abs(i.y-self.y)/2):
                                             leave = False
                         self.leave_on_orange = leave
@@ -158,6 +170,8 @@ class Car:
     def find_distance(self, entity):
         """Συνάρτηση η οποία δέχεται σαν όρισμα ένα άλλο αντικείμενο και βρίσκει την
         απόσταση από αυτό"""
+        # Επιστρέφει την απόσταση δύο αντικειμένων χρησιμοποιώντας το
+        # Πυθαγόρειο θεώρημα
         return math.sqrt(abs(self.x - entity.x)**2 + abs(self.y - entity.y)**2)
 
     def axis_distance(self, entity):
