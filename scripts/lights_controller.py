@@ -42,6 +42,8 @@ class LightsController:
         self.operator()
 
     def initialise(self, mode):
+        """Μέθοδος που αρχικοποιεί τη λειτουργία των φαναριών σε μία από τις
+        δύο λειτουργίες κανονική και νυχτερινή"""
         self.current_mode = mode
         if mode == "night":
             self.pedestrian_command("main", "off", 0)
@@ -56,6 +58,7 @@ class LightsController:
             self.car_command("secondary", "red")
 
     def operator(self):
+        """Μέθοδος που ελέγχει τη λειτουργία και το συγχρονισμό των σηματοδοτών"""
         if self.operation_mode:
             if self.current_mode == "night":
                 self.light_blink("secondary")
@@ -83,6 +86,8 @@ class LightsController:
         self.root.after(1000, self.operator)
 
     def pedestrian_command(self, street, command, seconds):
+        """Μέθοδος που μεταφέρει τις εντολές στους φωτεινούς σηματοδότες των πεζών
+        καθώς και το χρόνο για το χρονόμετρο που βλέπουν οι πεζοί"""
         for tr_lights in self.tr_lights_main_sec[street]:
             for ped in tr_lights.ped_lights:
                 if ped.phase != command:
@@ -90,11 +95,13 @@ class LightsController:
                     ped.timer_seconds = seconds
 
     def car_command(self, street, command):
+        """Μέθοδος που μεταφέρει τις εντολές στους φωτεινούς σηματοδότες των αυτοκινήτων"""
         for val in self.tr_lights_main_sec[street]:
             if command != val.command:
                 val.command = command
 
     def light_blink(self, street):
+        """Μέθοδος που μεταφέρει τις εντολές για την παλώμενη λειτουργία του σηματοδότη"""
         for val in self.tr_lights_main_sec[street]:
             if val.command != "orange":
                 val.command = "orange"
@@ -102,6 +109,8 @@ class LightsController:
                 val.command = "off"
 
     def change_mode(self):
+        """Μέθοδος που πραγματοποιεί την αλλαγή λειτουργίας των φωτεινών σηματοδοτών
+        από κανονική σε νυχτερινή"""
         self.operation_mode = not self.operation_mode
         for i in self.tr_lights_dict.values():
             i.operation_mode = self.operation_mode
@@ -140,6 +149,8 @@ class LightsController:
                 self.tr_lights_dict[str(tr_light.direction)] = tr_light
 
     def ped_lights_images_creator(self):
+        """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών των πεζών
+        ανάλογα με την κατεύθυνση του κάθε ενός"""
         images = {}
         for x in range(1, 5):
             dir_images = {}
