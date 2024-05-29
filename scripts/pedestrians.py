@@ -189,7 +189,8 @@ class Pedestrian:
                                         # Αν η απόσταση από το αυτοκίνητο είναι μικρότερη
                                         # από την οριζόμενη στην οποία προστίθεται και άλλη
                                         # απόσταση ανάλογα με την ταχύτητα των αυτοκινήτων
-                                        if self.find_distance(i) < 600+(50*(i.car_speed-6)):
+                                        extra_distance = 50*(i.car_speed-6)
+                                        if self.find_distance(i) < 600 + extra_distance:
                                             leave = False
                         self.leave_on_off = leave
                         self.restart_movement(x)

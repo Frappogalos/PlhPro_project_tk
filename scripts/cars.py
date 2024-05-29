@@ -152,9 +152,10 @@ class Car:
                                     for i in car_list_2:
                                         # Αν η απόσταση από το αυτοκίνητο είναι μικρότερη
                                         # από την οριζόμενη στην οποία προστίθεται και άλλη
-                                        # απόσταση ανάλογα με την απόσταση του άξονα Υ
+                                        # απόσταση ανάλογα με την απόσταση στον άξονα Υ
                                         # μεταξύ τους
-                                        if self.find_distance(i) < 400+(abs(i.y-self.y)/2):
+                                        extra_distance = abs(i.y-self.y)/2
+                                        if self.find_distance(i) < 400 + extra_distance:
                                             leave = False
                         self.leave_on_orange = leave
                         self.restart_movement(x)
