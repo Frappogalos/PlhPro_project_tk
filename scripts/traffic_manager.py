@@ -26,6 +26,9 @@ class TrafficManager:
         self.car_height = car_params["height"]
         # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
         self.car_limit = car_params["car_limit"]
+        # Χρονικό διάστημα που μεσολαβεί για τη δημιουργία
+        # του κάθε αυτοκινήτου
+        self.car_time_interval = car_params["car_time_interval"]
         self.ped_params = ped_params
         # Οι θέσεις όπου εμφανίζονται οι πεζοί όταν δημιουργούνται
         self.ped_pos = ped_params["pos"]
@@ -39,6 +42,9 @@ class TrafficManager:
         self.ped_height = ped_params["height"]
         # Μέγιστος αριθμός πεζών που μπορούν να υπάρχουν ταυτόχρονα
         self.pedestrian_limit = ped_params["pedestrian_limit"]
+        # Χρονικό διάστημα που μεσολαβεί για τη δημιουργία
+        # του κάθε πεζού
+        self.ped_time_interval = ped_params["ped_time_interval"]
         # Λεξικό με τα ενεργά αυτοκίνητα ανάλογα με την κατεύθυνση
         # και τη λορίδα που κινούνται
         self.cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []], "4": [[], []]}
@@ -114,7 +120,7 @@ class TrafficManager:
                 # Καταχώριση στη λίστα με όλα τα αυτοκίνητα
                 self.total_car_list.append(new_car)
         # Κλήση της ίδιας συνάρτησης μετά από 4 δευτερόλεπτα
-        self.root.after(4000, self.car_creator)
+        self.root.after(self.car_time_interval, self.car_creator)
 
     # Μέθοδος που ρυθμίζει τις ταχύτητες των αυτοκινήτων όπως ζητείται από το β προαιρετικό ζητούμενο
     def change_car_speed(self, speed):
@@ -208,7 +214,7 @@ class TrafficManager:
                 # Καταχώριση στη λίστα με όλους τους πεζούς
                 self.total_ped_list.append(new_ped)
         # Κλήση εκ νέου της συνάρτησης μετά από το οριζόμενο χρονικό διάστημα
-        self.root.after(4000, self.pedestrian_creator)
+        self.root.after(self.ped_time_interval, self.pedestrian_creator)
 
     def delete_ped(self):
         """Μέθοδος η οποία καλείται συνεχώς και διαγράφει τους πεζούς

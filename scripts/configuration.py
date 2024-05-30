@@ -37,7 +37,8 @@ cars_params = {"pos": {"1": [(-100, 645), (-100, 570)], "2": [(870, 1180), (960,
                "dist_to_light": (150, 220),
                "img": "../images/cars/car_#.png",
                "height": 55,
-               "car_limit": 10
+               "car_limit": 10,
+               "car_time_interval": 4000
                }
 
 # Παράμετροι πεζών
@@ -50,7 +51,8 @@ peds_params = {"pos": {"1": (-40, 340), "2": (760, 1130), "3": (1882, 740), "4":
                "frames_to_next_step": 9,
                "img": "../images/pedestrians/Person_#_$.png",
                "height": 36,
-               "pedestrian_limit": 10
+               "pedestrian_limit": 10,
+               "ped_time_interval": 4000
                }
 
 # Παράμετροι κουμπιών
