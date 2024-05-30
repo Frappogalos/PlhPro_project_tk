@@ -175,7 +175,7 @@ class Pedestrian:
                 if x == "<class 'traffic_lights.PedestrianLights'>" and y:
                     if self.lights.current_mode == "normal" and y.phase == "green":
                         self.restart_movement(x)
-                    elif self.lights.current_mode == "night":
+                    elif y.phase == "off":
                         leave = True
                         for key, car_list_1 in self.cars_dict.items():
                             # Έλεγχος στα οχήματα των οποίων οι πορείες διασταυρώνονται
