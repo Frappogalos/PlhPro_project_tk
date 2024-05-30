@@ -4,22 +4,28 @@
 bg_image = "../images/double_intersection.jpg"
 
 # Παράμετροι σηματοδοτών αυτοκινήτων και πεζών
-car_tl_params = {"pos": [{"1": (780, 700), "2": (1030, 700), "3": (1040, 380)}],
-                 "img": "../images/traffic_lights/car_#.png",
-                 "height": 120,
-                 "pl_params": {1: [{"direction": 4, "phase": "off", "pos": (680, 340)},
-                                   {"direction": 2, "phase": "off", "pos": (680, 740)}],
-                               2: [{"direction": 1, "phase": "off", "pos": (760, 280)},
-                                   {"direction": 3, "phase": "off", "pos": (1070, 280)},
-                                   {"direction": 1, "phase": "off", "pos": (760, 800)},
-                                   {"direction": 3, "phase": "off", "pos": (1070, 800)}],
-                               3: [{"direction": 4, "phase": "off", "pos": (1150, 340)},
-                                   {"direction": 2, "phase": "off", "pos": (1150, 740)}]},
-                 "ped_config": {"img": "../images/traffic_lights/pedestrian_#.png",
-                                "height": 110,
-                                "timer_pos": {1: (-38, 0), 2: (0, 38), 3: (38, 0), 4: (0, -38)}
-                                }
-                 }
+light_params = {"pos": {"car_tl": [{"1": (780, 700), "2": (1030, 700), "3": (1040, 380)}],
+                        "ped_lights": [{1: [{"direction": 4, "phase": "off", "pos": (680, 340)},
+                                            {"direction": 2, "phase": "off", "pos": (680, 740)}
+                                            ],
+                                        2: [{"direction": 1, "phase": "off", "pos": (760, 280)},
+                                            {"direction": 3, "phase": "off", "pos": (1070, 280)},
+                                            {"direction": 1, "phase": "off", "pos": (760, 800)},
+                                            {"direction": 3, "phase": "off", "pos": (1070, 800)}
+                                            ],
+                                        3: [{"direction": 4, "phase": "off", "pos": (1150, 340)},
+                                            {"direction": 2, "phase": "off", "pos": (1150, 740)}
+                                            ]
+                                        }
+                                       ]
+                        },
+                "img": "../images/traffic_lights/car_#.png",
+                "height": 120,
+                "ped_config": {"img": "../images/traffic_lights/pedestrian_#.png",
+                               "height": 110,
+                               "timer_pos": {1: (-38, 0), 2: (0, 38), 3: (38, 0), 4: (0, -38)}
+                               }
+                }
 
 # Παράμετροι αυτοκινήτων
 cars_params = {"pos": {"1": [(-100, 645), (-100, 570)], "2": [(870, 1180), (960, 1180)],

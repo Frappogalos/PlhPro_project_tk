@@ -19,7 +19,7 @@ canvas.pack(fill="both", expand=True)
 # Ορισμός φόντου στον καμβά
 back_ground = canvas.create_image(bg.width()/2, bg.height()/2, image=bg)
 # Κλήση της κλάσης που δημιουργεί και διαχειρίζεται τους φωτεινούς σηματοδότες
-controller = LightsController(tl_parameters=config.car_tl_params, canvas=canvas, root=root)
+controller = LightsController(tl_parameters=config.light_params, canvas=canvas, root=root)
 # Κλήση της κλάσης που δημιουργεί και διαχειρίζεται τη δημιουργία και διαγραφή των
 # αυτοκινήτων και των πεζών.
 traffic_manager = TrafficManager(car_params=config.cars_params, ped_params=config.peds_params,

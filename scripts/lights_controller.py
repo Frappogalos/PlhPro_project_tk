@@ -19,7 +19,7 @@ class LightsController:
         self.current_mode = "normal"
         # Λεξικό με τις παραμέτρους των φωτεινών σηματοδοτών ανάλογα με την
         # κατεύθυνση της κίνησης που ελέγχουν
-        self.car_tl_params = tl_parameters
+        self.tl_params = tl_parameters
         # Λεξικό με τις παραμέτρους των φωτεινών σηματοδοτών για τους πεζούς
         self.ped_config = tl_parameters["ped_config"]
         # Λεξικό με τις εικόνες των φωτεινών σηματοδοτών για τα αυτοκίνητα
@@ -121,12 +121,12 @@ class LightsController:
         """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
         με την κατεύθυνση του κάθε ενός"""
         images = {}
-        for x in self.car_tl_params["pos"][0].keys():
+        for x in self.tl_params["pos"]["car_tl"][0].keys():
             dir_images = {}
             for i in TrafficLights.light_phases:
-                tr_image = Image.open(self.car_tl_params["img"].replace("#", i))
-                resized_image = tr_image.resize((int(tr_image.width * (self.car_tl_params["height"] / tr_image.height)),
-                                                 self.car_tl_params["height"]))
+                tr_image = Image.open(self.tl_params["img"].replace("#", i))
+                resized_image = tr_image.resize((int(tr_image.width * (self.tl_params["height"] / tr_image.height)),
+                                                 self.tl_params["height"]))
                 rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
                 dir_images[i] = ImageTk.PhotoImage(rotated_image)
             images[x] = dir_images
@@ -134,10 +134,13 @@ class LightsController:
 
     def traffic_lights_creator(self):
         """Μέθοδος η οποία δημιουργεί τους φωτεινούς σηματοδότες"""
-        for x in self.car_tl_params["pos"]:
-            for i in x.keys():
-                tr_light = TrafficLights(images=self.car_images[i], direction=int(i), position=x[i],
-                                         tl_parameters=self.car_tl_params, ped_images=self.ped_images,
+        for x in range(0, len(self.tl_params["pos"]["car_tl"])):
+            for i in self.tl_params["pos"]["car_tl"][x].keys():
+                tr_light = TrafficLights(images=self.car_images[i], direction=int(i),
+                                         position=self.tl_params["pos"]["car_tl"][x][i],
+                                         ped_lights_parameters=self.tl_params["pos"]["ped_lights"][x],
+                                         ped_config=self.tl_params["ped_config"],
+                                         ped_images=self.ped_images,
                                          canvas=self.canvas, window=self.root)
                 for light in tr_light.ped_lights:
                     self.ped_lights_dict[str(light.direction)].append(light)

@@ -1,10 +1,9 @@
-
 class TrafficLights:
     """Κλάση για τη δημιουργία και τις λειτουργίες των φωτεινών σηματοδοτών"""
     # Λίστα με τις φάσεις λειτουργίας των σηματοδοτών
     light_phases = ["off", "green", "orange", "red"]
 
-    def __init__(self, images, direction, position, tl_parameters, ped_images, canvas, window):
+    def __init__(self, images, direction, position, ped_lights_parameters, ped_config, ped_images, canvas, window):
         # Μεταβλητή για το εάν το πρόγραμμα λειτουργεί ή
         # βρίσκεται σε παύση
         self.operation_mode = True
@@ -16,8 +15,10 @@ class TrafficLights:
         # Μεταβλητή με την εντολή που λαμβάνει από την κύρια
         # συνάρτηση ελέγχου των σηματοδοτών
         self.command = "off"
-        # Παράμετροι των φωτεινών σηματοδοτών
-        self.tl_params = tl_parameters
+        # Παράμετροι των φωτεινών σηματοδοτών των πεζών
+        self.ped_lights_params = ped_lights_parameters
+        # Ρυθμίσεις για τους σηματοδότες των πεζών
+        self.ped_config = ped_config
         # Λεξικό με τις φωτογραφίες που θα χρησιμοποιηθούν
         # για τους φωτεινούς σηματοδότες των πεζών
         self.ped_images = ped_images
@@ -50,10 +51,10 @@ class TrafficLights:
     def create_pedestrian_lights(self):
         """Δημιουργία των φωτεινών σηματοδοτών των πεζών"""
         lights_list = []
-        for i in self.tl_params["pl_params"][self.direction]:
+        for i in self.ped_lights_params[self.direction]:
             ped_light = PedestrianLights(images=self.ped_images, direction=i["direction"],
-                                         ped_config=self.tl_params["ped_config"], phase=i["phase"], canvas=self.canvas,
-                                         window=self.root, pos=i["pos"])
+                                         ped_config=self.ped_config, phase=i["phase"],
+                                         canvas=self.canvas, window=self.root, pos=i["pos"])
             lights_list.append(ped_light)
         return lights_list
 
