@@ -121,7 +121,7 @@ class SettingsBtn:
         # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
         # του ορίου των οχημάτων που μπορούν να βρίσκονται στο χάρτη
         self.car_lim_spinbox = tk.Spinbox(win, from_=1, to=50,
-                                          textvariable=tk.DoubleVar(value=self.cars_params["car_limit"]), width=10,
+                                          textvariable=tk.DoubleVar(value=self.traffic_manager.car_limit), width=10,
                                           relief="sunken", repeatdelay=500, repeatinterval=100, font=("Arial", 12),
                                           bg="lightgrey", fg="blue", command=self.change_car_limit)
         self.car_lim_spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
@@ -130,7 +130,9 @@ class SettingsBtn:
         # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
         # της πυκνότητας της κυκλοφορίας
         self.car_time_inter_spinbox = tk.Spinbox(win, from_=1, to=7,
-                                                 textvariable=tk.DoubleVar(value=self.cars_params["car_time_interval"]),
+                                                 textvariable=tk.DoubleVar(
+                                                     value=8 - self.traffic_manager.car_time_interval
+                                                 ),
                                                  width=10, relief="sunken", repeatdelay=500, repeatinterval=100,
                                                  font=("Arial", 12), bg="lightgrey", fg="blue",
                                                  command=self.change_car_time_interval)
