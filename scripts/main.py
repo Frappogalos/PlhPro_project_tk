@@ -35,7 +35,7 @@ PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1],
 OpButton(x=config.op_btn_params["pos"][0], y=config.op_btn_params["pos"][1],
          images=config.op_btn_params["images"], window=root, lights_controller=controller)
 # Δημιουργία κουμπιού για άνοιγμα των ρυθμίσεων
-SettingsBtn(x=1550, y=50, image="../images/buttons/settings.png", window=root, traffic_manager=traffic_manager,
+SettingsBtn(x=1600, y=50, image="../images/buttons/settings.png", window=root, traffic_manager=traffic_manager,
             cars_params=config.cars_params)
 # Κλείδωμα των διαστάσεων του παραθύρου
 root.resizable(width=False, height=False)
