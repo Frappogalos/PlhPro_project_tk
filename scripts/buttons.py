@@ -57,35 +57,101 @@ class PauseButton:
         self.controller.change_mode()
 
 
-class CarsSpeedControl:
-    """Κλάση για τη δημιουργία του γραφικού στοιχείου για τη ρύθμιση
-    της ταχύτητας των οχημάτων"""
-    def __init__(self, x, y, window, traffic_manager, default_speed, speed_range):
-        # Θέση στον άξονα Χ
+class SettingsBtn:
+    def __init__(self, x, y, image, traffic_manager, cars_params, window):
+        # Θέση του κουμπιού στον άξονα Χ
         self.posx = x
-        # Θέση στον άξονα Χ
+        # Θέση του κουμπιού στον άξονα Υ
         self.posy = y
+        # Εικόνα που θα χρησιμοποιηθεί για το κουμπί
+        self.image = ImageTk.PhotoImage(Image.open(image))
+        # Δημιουργία του κουμπιού στον καμβά
+        self.button = tk.Button(window, image=self.image, command=self.open_settings)
+        # Τοποθέτηση στη θέση που ορίζεται
+        self.button.place(x=self.posx, y=self.posy)
         # Διαχειριστής κυκλοφορίας
         self.traffic_manager = traffic_manager
-        # Μεταβλητή με την προεπιλεγμένη ταχύτητα
-        def_speed = tk.DoubleVar(value=default_speed)
+        self.cars_params = cars_params
+        self.popup = None
+        self.speed_spinbox = None
+        self.car_lim_spinbox = None
+        self.car_time_inter_spinbox = None
+
+    def open_settings(self):
+        """Μέθοδος που δημιουργεί το παράθυρο των ρυθμίσεων του προγράμματος"""
+        if self.popup:
+            self.popup.destroy()
+        win = tk.Toplevel()
+        # Τίτλος παραθύρου
+        win.title("Ρυθμίσεις")
+        # Μέγεθος παραθύρου
+        win.geometry("400x300")
+        # Εικονίδιο παραθύρου
+        win.wm_iconphoto(False, self.image)
+        # Κλείδωμα διαστάσεων παραθύρου
+        win.resizable(width=False, height=False)
+        self.popup = win
         # Δημιουργία ετικέτας
-        self.label = tk.Label(window, text="Ταχύτητα οχημάτων", bg="lightblue", font=("Arial", 16, "bold"),
-                              relief=tk.RAISED)
+        label_1 = tk.Label(win, text=f"Ταχύτητα οχημάτων\n{self.cars_params['cars_speed_range'][0]} - "
+                                     f"{self.cars_params['cars_speed_range'][1]}", bg="lightblue",
+                           font=("Arial", 16, "bold"),
+                           relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
-        self.label.place(x=self.posx-40, y=self.posy-30)
+        label_1.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+        # Δημιουργία ετικέτας
+        label_2 = tk.Label(win, text="Όριο οχημάτων\n1 - 50", bg="lightblue", font=("Arial", 16, "bold"),
+                           relief=tk.RAISED)
+        # Τοποθέτηση της ετικέτας στον καμβά
+        label_2.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
+        # Δημιουργία ετικέτας
+        label_3 = tk.Label(win, text="Πυκνότητα κυκλοφορίας\n1 - 7", bg="lightblue", font=("Arial", 16, "bold"),
+                           relief=tk.RAISED)
+        # Τοποθέτηση της ετικέτας στον καμβά
+        label_3.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
         # της ταχύτητας των οχημάτων
-        self.spinbox = tk.Spinbox(window, from_=speed_range[0], to=speed_range[1], textvariable=def_speed, width=10,
-                                  relief="sunken", repeatdelay=500, repeatinterval=100, font=("Arial", 12),
-                                  bg="lightgrey", fg="blue", command=self.change_speed)
-        self.spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
+        self.speed_spinbox = tk.Spinbox(win, from_=self.cars_params["cars_speed_range"][0],
+                                        to=self.cars_params["cars_speed_range"][1],
+                                        textvariable=tk.DoubleVar(value=self.cars_params["default_car_speed"]), width=10,
+                                        relief="sunken", repeatdelay=500, repeatinterval=100, font=("Arial", 12),
+                                        bg="lightgrey", fg="blue", command=self.change_speed)
+        self.speed_spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
         # Τοποθέτηση του γραφικού στοιχείου στον καμβά
-        self.spinbox.place(x=self.posx, y=self.posy)
+        self.speed_spinbox.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+        # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
+        # του ορίου των οχημάτων που μπορούν να βρίσκονται στο χάρτη
+        self.car_lim_spinbox = tk.Spinbox(win, from_=1, to=50,
+                                          textvariable=tk.DoubleVar(value=self.cars_params["car_limit"]), width=10,
+                                          relief="sunken", repeatdelay=500, repeatinterval=100, font=("Arial", 12),
+                                          bg="lightgrey", fg="blue", command=self.change_car_limit)
+        self.car_lim_spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
+        # Τοποθέτηση του γραφικού στοιχείου στον καμβά
+        self.car_lim_spinbox.grid(row=1, column=1, padx=(10, 10), pady=(10, 10))
+        # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
+        # της πυκνότητας της κυκλοφορίας
+        self.car_time_inter_spinbox = tk.Spinbox(win, from_=1, to=7,
+                                                 textvariable=tk.DoubleVar(value=self.cars_params["car_time_interval"]),
+                                                 width=10, relief="sunken", repeatdelay=500, repeatinterval=100,
+                                                 font=("Arial", 12), bg="lightgrey", fg="blue",
+                                                 command=self.change_car_time_interval)
+        self.car_time_inter_spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
+        # Τοποθέτηση του γραφικού στοιχείου στον καμβά
+        self.car_time_inter_spinbox.grid(row=2, column=1, padx=(10, 10), pady=(10, 10))
 
     def change_speed(self):
         """Μέθοδος για την αλλαγή ταχύτητας των οχημάτων καλώντας την ανάλογη
         μέθοδο του διαχειριστή κυκλοφορίας"""
-        value = int(self.spinbox.get())
+        value = int(self.speed_spinbox.get())
         self.traffic_manager.change_car_speed(value)
 
+    def change_car_limit(self):
+        """Μέθοδος για την αλλαγή του ορίου οχημάτων που μπορούν να βρίσκονται
+        στον προσομοιωτή αλλάζοντας την ανάλογη μεταβλητή του διαχειριστή κυκλοφορίας"""
+        value = int(self.car_lim_spinbox.get())
+        self.traffic_manager.car_limit = value
+
+    def change_car_time_interval(self):
+        """Μέθοδος για την αλλαγή της πυκνότητας των οχημάτων στον προσομοιωτή
+        αλλάζοντας την ανάλογη μεταβλητή του διαχειριστή κυκλοφορίας"""
+        value = int(self.car_time_inter_spinbox.get())
+        self.traffic_manager.car_time_interval = 8 - value

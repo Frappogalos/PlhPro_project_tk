@@ -119,8 +119,8 @@ class TrafficManager:
                 self.cars_dict[str(new_car.direction)][new_car.lane].append(new_car)
                 # Καταχώριση στη λίστα με όλα τα αυτοκίνητα
                 self.total_car_list.append(new_car)
-        # Κλήση της ίδιας συνάρτησης μετά από 4 δευτερόλεπτα
-        self.root.after(self.car_time_interval, self.car_creator)
+        # Κλήση της ίδιας συνάρτησης μετά από το οριζόμενο χρονικό διάστημα
+        self.root.after(self.car_time_interval*1000, self.car_creator)
 
     # Μέθοδος που ρυθμίζει τις ταχύτητες των αυτοκινήτων όπως ζητείται από το β προαιρετικό ζητούμενο
     def change_car_speed(self, speed):

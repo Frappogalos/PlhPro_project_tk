@@ -1,5 +1,5 @@
 import tkinter as tk
-from buttons import OpButton, PauseButton, CarsSpeedControl
+from buttons import OpButton, PauseButton, SettingsBtn
 from PIL import ImageTk, Image
 from lights_controller import LightsController
 from traffic_manager import TrafficManager
@@ -11,6 +11,10 @@ root = tk.Tk()
 root.title("Traffic Simulator")
 # Φόρτωση εικόνας φόντου
 bg = ImageTk.PhotoImage(Image.open(config.bg_image))
+# Φόρτωση εικονιδίου παραθύρου
+window_icon = ImageTk.PhotoImage(Image.open(config.window_icon_image))
+# Εικονίδιο παραθύρου
+root.wm_iconphoto(False, window_icon)
 # Μέγεθος παραθύρου
 root.geometry(f"{bg.width()}x{bg.height()}")
 # Δημιουργία καμβά όπου θα τρέχει η προσομοίωση
@@ -30,10 +34,9 @@ PauseButton(x=config.pause_params["pos"][0], y=config.pause_params["pos"][1],
 # Δημιουργία του κουμπιού για την εναλλαγή των λειτουργιών των φωτεινών σηματοδοτών
 OpButton(x=config.op_btn_params["pos"][0], y=config.op_btn_params["pos"][1],
          images=config.op_btn_params["images"], window=root, lights_controller=controller)
-# Δημιουργία του επιλογέα ταχύτητας των αυτοκινήτων
-CarsSpeedControl(x=config.car_spinbox["pos"][0], y=config.car_spinbox["pos"][1], window=root,
-                 traffic_manager=traffic_manager, default_speed=config.cars_params["default_car_speed"],
-                 speed_range=config.cars_params["cars_speed_range"])
+# Δημιουργία κουμπιού για άνοιγμα των ρυθμίσεων
+SettingsBtn(x=1550, y=50, image="../images/buttons/settings.png", window=root, traffic_manager=traffic_manager,
+            cars_params=config.cars_params)
 # Κλείδωμα των διαστάσεων του παραθύρου
 root.resizable(width=False, height=False)
 root.mainloop()
