@@ -92,22 +92,22 @@ class SettingsBtn:
         win.resizable(width=False, height=False)
         self.popup = win
         # Δημιουργία ετικέτας
-        label_1 = tk.Label(win, text=f"Ταχύτητα οχημάτων\n{self.cars_params['cars_speed_range'][0]} - "
-                                     f"{self.cars_params['cars_speed_range'][1]}", bg="lightblue",
-                           font=("Arial", 16, "bold"),
-                           relief=tk.RAISED)
+        speed_label_txt = (f"Ταχύτητα οχημάτων\n{self.cars_params['cars_speed_range'][0]} - "
+                           f"{self.cars_params['cars_speed_range'][1]}")
+        speed_label = tk.Label(win, text=speed_label_txt, bg="lightblue", font=("Arial", 16, "bold"), relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
-        label_1.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+        speed_label.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία ετικέτας
-        label_2 = tk.Label(win, text="Όριο οχημάτων\n1 - 50", bg="lightblue", font=("Arial", 16, "bold"),
-                           relief=tk.RAISED)
+        limit_label_txt = "Όριο οχημάτων\n1 - 50"
+        limit_label = tk.Label(win, text=limit_label_txt, bg="lightblue", font=("Arial", 16, "bold"), relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
-        label_2.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
+        limit_label.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία ετικέτας
-        label_3 = tk.Label(win, text="Πυκνότητα κυκλοφορίας\n1 - 7", bg="lightblue", font=("Arial", 16, "bold"),
-                           relief=tk.RAISED)
+        density_label_txt = "Πυκνότητα κυκλοφορίας\n1 - 7"
+        density_label = tk.Label(win, text=density_label_txt, bg="lightblue", font=("Arial", 16, "bold"),
+                                 relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
-        label_3.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
+        density_label.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία του γραφικού στοιχείου για τη ρύθμιση
         # της ταχύτητας των οχημάτων
         self.speed_spinbox = tk.Spinbox(win, from_=self.cars_params["cars_speed_range"][0],

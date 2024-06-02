@@ -3,7 +3,7 @@ import math
 
 class Car:
     """Κλάση Car για τη δημιουργία των αυτοκινήτων και τις λειτουργίες τους"""
-    def __init__(self, image, direction, lane, params, canvas, window, lights, total_car_list, cars_dict):
+    def __init__(self, image, direction, lane, speed, params, canvas, window, lights, total_car_list, cars_dict):
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο αυτοκίνητο"""
         # Εικόνα που χρησιμοποιεί το αυτοκίνητο
         self.image = image
@@ -14,7 +14,7 @@ class Car:
         # Μεταβλητή που αποθηκεύεται ο χειριστής των φαναριών
         self.lights = lights
         # Προεπιλεγμένη ταχύτητα του αυτοκινήτου
-        self.car_speed = params["default_car_speed"]
+        self.car_speed = speed
         # Λεξικό με τη μεταβολή της θέσης των αυτοκινήτων στους άξονες Χ και Υ
         # ανάλογα με την κατεύθυνση του οχήματος
         direction_speed = {"1": (self.car_speed, 0), "2": (0, -self.car_speed), "3": (-self.car_speed, 0)}

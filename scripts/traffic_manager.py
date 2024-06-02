@@ -24,6 +24,8 @@ class TrafficManager:
         self.car_img = car_params["img"]
         # Ύψος που πρέπει να έχει η εικόνα στο πρόγραμμα
         self.car_height = car_params["height"]
+        # Ταχύτητα αυτοκινήτων
+        self.car_speed = car_params["default_car_speed"]
         # Μέγιστος αριθμός αυτοκινήτων που μπορούν να υπάρχουν ταυτόχρονα
         self.car_limit = car_params["car_limit"]
         # Χρονικό διάστημα που μεσολαβεί για τη δημιουργία
@@ -111,8 +113,8 @@ class TrafficManager:
                 # Τυχαία επιλογή μίας από τις διαθέσιμες φωτογραφίες αυτοκινήτων
                 car_image = random.choice(self.car_images[str(direction)])
                 # Δημιουργία καινούριου αυτοκινήτου
-                new_car = Car(image=car_image, direction=direction, lane=lane, params=self.car_params,
-                              canvas=self.canvas, window=self.root, lights=self.lights,
+                new_car = Car(image=car_image, direction=direction, speed=self.car_speed, lane=lane,
+                              params=self.car_params, canvas=self.canvas, window=self.root, lights=self.lights,
                               total_car_list=self.total_car_list, cars_dict=self.cars_dict)
                 #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή του
                 #  και τη λορίδα κυκλοφορίας
@@ -132,7 +134,7 @@ class TrafficManager:
             # πηγή: https://stackoverflow.com/questions/9987483/elif-in-list-comprehension-conditionals
             car.speed = tuple([i if i == 0 else speed if i > 0 else -speed for i in list(car.speed)])
             # Αλλαγή της προεπιλεγμένης ταχύτητας
-            self.car_params["default_car_speed"] = speed
+            self.car_speed = speed
             # Αν το αυτοκίνητο κινείται αλλάζει και την τρέχουσα ταχύτητα του οχήματος
             if car.moving:
                 car.cur_speed = car.speed
