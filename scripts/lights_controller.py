@@ -121,15 +121,15 @@ class LightsController:
         """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
         με την κατεύθυνση του κάθε ενός"""
         images = {}
-        for x in self.tl_params["pos"]["car_tl"][0].keys():
+        for x in range(1, 5):
             dir_images = {}
             for i in TrafficLights.light_phases:
                 tr_image = Image.open(self.tl_params["img"].replace("#", i))
                 resized_image = tr_image.resize((int(tr_image.width * (self.tl_params["height"] / tr_image.height)),
                                                  self.tl_params["height"]))
-                rotated_image = resized_image.rotate(90 * (int(x) - 2), expand=True)
+                rotated_image = resized_image.rotate(90 * (x - 2), expand=True)
                 dir_images[i] = ImageTk.PhotoImage(rotated_image)
-            images[x] = dir_images
+            images[str(x)] = dir_images
         return images
 
     def traffic_lights_creator(self):
