@@ -112,10 +112,11 @@ class LightsController:
         """Μέθοδος που πραγματοποιεί την αλλαγή λειτουργίας των φωτεινών σηματοδοτών
         από κανονική σε νυχτερινή"""
         self.operation_mode = not self.operation_mode
-        for i in self.tr_lights_dict.values():
-            i.operation_mode = self.operation_mode
-            for x in i.ped_lights:
-                x.operation_mode = self.operation_mode
+        for lights_list in self.tr_lights_dict.values():
+            for light in lights_list:
+                light.operation_mode = self.operation_mode
+                for x in light.ped_lights:
+                    x.operation_mode = self.operation_mode
 
     def car_lights_images_creator(self):
         """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών ανάλογα
