@@ -48,7 +48,7 @@ class TrafficManager:
         # του κάθε πεζού
         self.ped_time_interval = ped_params["ped_time_interval"]
         # Δημιουργία λεξικού με τα ενεργά αυτοκίνητα ανάλογα με την
-        # κατεύθυνση και τη λορίδα που κινούνται
+        # κατεύθυνση και τη λωρίδα που κινούνται
         self.cars_dict = {}
         for i in self.car_pos.keys():
             self.cars_dict[i] = []
@@ -56,8 +56,13 @@ class TrafficManager:
                 self.cars_dict[i].append([])
         # Λίστα με όλα τα ενεργά οχήματα
         self.total_car_list = []
-        # Λεξικό με τους ενεργούς πεζούς ανάλογα με την κατεύθυνση που κινούνται
-        self.ped_dict = {"1": [], "2": [], "3": [], "4": []}
+        # Δημιουργία λεξικού με τους ενεργούς πεζούς ανάλογα με την
+        # κατεύθυνση και την αρχική θέση εκκίνησής τους
+        self.ped_dict = {}
+        for i in self.ped_pos.keys():
+            self.ped_dict[i] = []
+            for x in self.ped_pos[i]:
+                self.ped_dict[i].append([])
         # Λίστα με τους ενεργούς πεζούς
         self.total_ped_list = []
         # Μεταβλητή στην οποία αποθηκεύονται οι εικόνες που θα χρησιμοποιηθούν
@@ -121,7 +126,7 @@ class TrafficManager:
                               params=self.car_params, canvas=self.canvas, window=self.root, lights=self.lights,
                               total_car_list=self.total_car_list, cars_dict=self.cars_dict)
                 #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή του
-                #  και τη λορίδα κυκλοφορίας
+                #  και τη λωρίδα κυκλοφορίας
                 self.cars_dict[str(new_car.direction)][new_car.lane].append(new_car)
                 # Καταχώριση στη λίστα με όλα τα αυτοκίνητα
                 self.total_car_list.append(new_car)
@@ -135,7 +140,6 @@ class TrafficManager:
         for car in self.total_car_list:
             # Χρήση list comprehension για δημιουργία πλειάδας που περιέχει την
             # ταχύτητα κίνησης του αυτοκινήτου στον κάθε άξονα
-            # πηγή: https://stackoverflow.com/questions/9987483/elif-in-list-comprehension-conditionals
             car.speed = tuple([i if i == 0 else speed if i > 0 else -speed for i in list(car.speed)])
             # Αλλαγή της προεπιλεγμένης ταχύτητας
             self.car_speed = speed
@@ -209,14 +213,16 @@ class TrafficManager:
                     direction = 3
                 else:
                     direction = 4
+                lane = random.choice(range(len(self.ped_params["pos"][str(direction)])))
                 # Τυχαία επιλογή φωτογραφίας πεζού
                 ped_image = random.choice(list(self.ped_images[str(direction)].values()))
                 # Δημιουργία καινούριας οντότητας πεζού
-                new_ped = Pedestrian(image=ped_image, direction=direction, params=self.ped_params, canvas=self.canvas,
+                new_ped = Pedestrian(image=ped_image, direction=direction, lane=lane, params=self.ped_params, canvas=self.canvas,
                                      window=self.root, lights=self.lights, total_ped_list=self.total_ped_list,
                                      ped_dict=self.ped_dict, cars_dict=self.cars_dict)
-                #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή του
-                self.ped_dict[str(new_ped.direction)].append(new_ped)
+                #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή
+                #  του και τη θέση εκκίνησής του
+                self.ped_dict[str(new_ped.direction)][new_ped.lane].append(new_ped)
                 # Καταχώριση στη λίστα με όλους τους πεζούς
                 self.total_ped_list.append(new_ped)
         # Κλήση εκ νέου της συνάρτησης μετά από το οριζόμενο χρονικό διάστημα
@@ -232,7 +238,7 @@ class TrafficManager:
                 # Διαγράφεται από τη λίστα με όλους τους πεζούς
                 self.total_ped_list.remove(ped)
                 # Διαγράφεται από το λεξικό
-                self.ped_dict[str(ped.direction)].remove(ped)
+                self.ped_dict[str(ped.direction)][ped.lane].remove(ped)
                 # Διαγράφεται η εικόνα του πεζού από τον καμβά
                 self.canvas.delete(ped.pedestrian)
                 # Και τέλος διαγράφεται το ίδιο το αντικείμενο

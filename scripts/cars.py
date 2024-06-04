@@ -9,7 +9,7 @@ class Car:
         self.image = image
         # Κατεύθυνση του αυτοκινήτου
         self.direction = direction
-        # Λορίδα κυκλοφορίας
+        # Λωρίδα κυκλοφορίας
         self.lane = lane
         # Μεταβλητή που αποθηκεύεται ο χειριστής των φαναριών
         self.lights = lights
@@ -89,6 +89,7 @@ class Car:
             # είναι κόκκινο ή πορτοκαλί
             if (self.lights.current_mode == "normal" and
                     self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1] and
+                    self.find_distance(light) < self.dist_to_light[1] * 1.5 and
                     (light.phase == "red" or light.phase == "orange")):
                 # Η μεταβλητή για το αν θα πρέπει να σταματήσει το αυτοκίνητο στο φανάρι
                 # μεταβάλετε σε True και ο σηματοδότης για τον οποίο σταμάτησε το τρέχον αυτοκίνητο αποθηκεύεται
@@ -97,6 +98,7 @@ class Car:
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
             elif (self.lights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
+                  self.find_distance(light) < self.dist_to_light[1] * 1.5 and
                   self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1]):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light

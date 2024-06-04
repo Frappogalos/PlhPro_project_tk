@@ -3,12 +3,14 @@ import math
 
 class Pedestrian:
     """Κλάση Pedestrian για τη δημιουργία των πεζών και τις λειτουργίες τους"""
-    def __init__(self, image, direction, params, canvas, window, lights, total_ped_list, ped_dict, cars_dict):
+    def __init__(self, image, direction, lane, params, canvas, window, lights, total_ped_list, ped_dict, cars_dict):
         """Μέθοδος που δέχεται τις παραμέτρους και δημιουργεί ένα καινούριο πεζό"""
         # Λεξικό με τις εικόνες που χρησιμοποιεί ο πεζός
         self.image = image
         # Κατεύθυνση του πεζού
         self.direction = direction
+        # Θέση εκκίνησης
+        self.lane = lane
         # Ταχύτητα κίνησης του πεζού
         self.ped_speed = params["ped_speed"]
         # Λεξικό με τη μεταβολή της θέσης των πεζών στους άξονες Χ και Υ
@@ -36,9 +38,9 @@ class Pedestrian:
         # σηματοδότη πεζών για το αν μπορούν ή όχι να διασχίσουν το δρόμο
         self.leave_on_off = False
         # Η θέση στον άξoνα X
-        self.x = params["pos"][str(self.direction)][0]
+        self.x = params["pos"][str(self.direction)][self.lane][0]
         # Η θέση στον άξoνα Υ
-        self.y = params["pos"][str(self.direction)][1]
+        self.y = params["pos"][str(self.direction)][self.lane][1]
         # Ελάχιστη απόσταση από τον προπορευόμενο πεζό
         self.ped_min_dist = params["ped_min_dist"]
         # Εύρος απόστασης που ακινητοποιείται ο πεζός από το φανάρι
@@ -94,7 +96,7 @@ class Pedestrian:
         collision = False
         # Δομή επανάληψης που διαπερνά τους πεζούς που βρίσκονται στην ίδια κατεύθυνση
         # κίνησης με τον τρέχων πεζό
-        for ped in self.ped_dict[str(self.direction)]:
+        for ped in self.ped_dict[str(self.direction)][self.lane]:
             # Έλεγχος αν ο πεζός της λίστας είναι ο ίδιος με τον τρέχον
             if self != ped:
                 # Αν όχι τότε ελέγχεται η απόστασή τους αν είναι μικρότερη της
@@ -122,6 +124,7 @@ class Pedestrian:
             # είναι κόκκινο
             if (self.lights.current_mode == "normal" and
                     self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1] and
+                    self.find_distance(light) < self.dist_to_light[1] * 2 and
                     light.phase == "red"):
                 # Η μεταβλητή για το αν θα πρέπει να σταματήσει ο πεζός στο φανάρι
                 # μεταβάλετε σε True και ο σηματοδότης για τον οποίο σταμάτησε
@@ -131,6 +134,7 @@ class Pedestrian:
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
             elif (self.lights.current_mode == "night" and not self.leave_on_off and
+                  self.find_distance(light) < self.dist_to_light[1] * 2 and
                   self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1]):
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
