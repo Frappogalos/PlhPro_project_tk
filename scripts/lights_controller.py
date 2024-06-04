@@ -27,7 +27,7 @@ class LightsController:
         # Λεξικό με τις εικόνες των φωτεινών σηματοδοτών για τους πεζούς
         self.ped_images = self.ped_lights_images_creator()
         # Λεξικό που αποθηκεύει τους φωτεινούς σηματοδότες ανά κατεύθυνση
-        self.tr_lights_dict = {}
+        self.tr_lights_dict = {"1": [], "2": [], "3": [], "4": []}
         # Λεξικό που αποθηκεύει ξεχωριστά τους σηματοδότες της κύριας
         # οδού με αυτούς της δευτερεύουσας
         self.tr_lights_main_sec = {"main": [], "secondary": []}
@@ -149,7 +149,7 @@ class LightsController:
                     self.tr_lights_main_sec["main"].append(tr_light)
                 else:
                     self.tr_lights_main_sec["secondary"].append(tr_light)
-                self.tr_lights_dict[str(tr_light.direction)] = tr_light
+                self.tr_lights_dict[str(tr_light.direction)].append(tr_light)
 
     def ped_lights_images_creator(self):
         """Δημιουργία λεξικού με τις φωτογραφίες των φωτεινών σηματοδοτών των πεζών

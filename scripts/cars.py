@@ -81,23 +81,27 @@ class Car:
         # αρχικοποίηση σε false
         stop_to_light = False
         # Μεταβλητή με τον σηματοδότη που είναι στην πορεία του τρέχων αυτοκινήτου
-        tr_light = self.lights.tr_lights_dict[str(self.direction)]
-        # Αν η λειτουργία του σηματοδότη είναι κανονική, η θέση του αυτοκινήτου
-        # εντός των ορίων της απόστασης από το σηματοδότη και το φως του σηματοδότη
-        # είναι κόκκινο ή πορτοκαλί
-        if (self.lights.current_mode == "normal" and
-                self.dist_to_light[0] < self.axis_distance(tr_light) < self.dist_to_light[1] and
-                (tr_light.phase == "red" or tr_light.phase == "orange")):
-            # Η μεταβλητή για το αν θα πρέπει να σταματήσει το αυτοκίνητο στο φανάρι
-            # μεταβάλετε σε True και ο σηματοδότης για τον οποίο σταμάτησε το τρέχον αυτοκίνητο αποθηκεύεται
-            # στο λεξικό stopped ώστε να ελεγχθεί και πάλι η κατάστασή του
-            # προκειμένου να ξεκινήσει πάλι η κίνησή του όταν αυτή αλλάξει
-            stop_to_light = True
-            self.stopped[str(type(tr_light))] = tr_light
-        elif (self.lights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
-              self.dist_to_light[0] < self.axis_distance(tr_light) < self.dist_to_light[1]):
-            stop_to_light = True
-            self.stopped[str(type(tr_light))] = tr_light
+        tr_lights = self.lights.tr_lights_dict[str(self.direction)]
+        # Δομή επανάληψης για έλεγχο όλων των σηματοδοτών για την εκάστοτε κατεύθυνση
+        for light in tr_lights:
+            # Αν η λειτουργία του σηματοδότη είναι κανονική, η θέση του αυτοκινήτου
+            # εντός των ορίων της απόστασης από το σηματοδότη και το φως του σηματοδότη
+            # είναι κόκκινο ή πορτοκαλί
+            if (self.lights.current_mode == "normal" and
+                    self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1] and
+                    (light.phase == "red" or light.phase == "orange")):
+                # Η μεταβλητή για το αν θα πρέπει να σταματήσει το αυτοκίνητο στο φανάρι
+                # μεταβάλετε σε True και ο σηματοδότης για τον οποίο σταμάτησε το τρέχον αυτοκίνητο αποθηκεύεται
+                # στο λεξικό stopped ώστε να ελεγχθεί και πάλι η κατάστασή του
+                # προκειμένου να ξεκινήσει πάλι η κίνησή του όταν αυτή αλλάξει
+                stop_to_light = True
+                self.stopped[str(type(light))] = light
+            elif (self.lights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
+                  self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1]):
+                stop_to_light = True
+                self.stopped[str(type(light))] = light
+            if stop_to_light:
+                break
         return stop_to_light
 
     def stop_car(self, entity):

@@ -47,9 +47,13 @@ class TrafficManager:
         # Χρονικό διάστημα που μεσολαβεί για τη δημιουργία
         # του κάθε πεζού
         self.ped_time_interval = ped_params["ped_time_interval"]
-        # Λεξικό με τα ενεργά αυτοκίνητα ανάλογα με την κατεύθυνση
-        # και τη λορίδα που κινούνται
-        self.cars_dict = {"1": [[], []], "2": [[], []], "3": [[], []], "4": [[], []]}
+        # Δημιουργία λεξικού με τα ενεργά αυτοκίνητα ανάλογα με την
+        # κατεύθυνση και τη λορίδα που κινούνται
+        self.cars_dict = {}
+        for i in self.car_pos.keys():
+            self.cars_dict[i] = []
+            for x in self.car_pos[i]:
+                self.cars_dict[i].append([])
         # Λίστα με όλα τα ενεργά οχήματα
         self.total_car_list = []
         # Λεξικό με τους ενεργούς πεζούς ανάλογα με την κατεύθυνση που κινούνται
@@ -109,7 +113,7 @@ class TrafficManager:
                     direction = 2
                 else:
                     direction = 3
-                lane = random.choice([0, 1])
+                lane = random.choice(range(len(self.car_params["pos"][str(direction)])))
                 # Τυχαία επιλογή μίας από τις διαθέσιμες φωτογραφίες αυτοκινήτων
                 car_image = random.choice(self.car_images[str(direction)])
                 # Δημιουργία καινούριου αυτοκινήτου
