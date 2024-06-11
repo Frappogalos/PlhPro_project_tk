@@ -111,13 +111,19 @@ class TrafficManager:
             # να δημιουργηθεί σε ένα από τα δύο ρεύματα κυκλοφορίας της κεντρικής οδού
             # όπως ζητείται από το β προαιρετικό ζητούμενο της εργασίας
             if len(self.total_car_list) < self.car_limit:
-                rand_num = random.randint(1, 100)
-                if rand_num <= 40:
-                    direction = 1
-                elif rand_num <= 60:
-                    direction = 2
-                else:
-                    direction = 3
+                # Δομή επανάληψης για επιλογή κατεύθυνσης και έλεγχος αν είναι διαθέσιμη
+                while True:
+                    rand_num = random.randint(1, 100)
+                    if rand_num <= 35:
+                        direction = 1
+                    elif rand_num <= 50:
+                        direction = 2
+                    elif rand_num <= 85:
+                        direction = 3
+                    else:
+                        direction = 4
+                    if self.car_params["pos"][str(direction)]:
+                        break
                 lane = random.choice(range(len(self.car_params["pos"][str(direction)])))
                 # Τυχαία επιλογή μίας από τις διαθέσιμες φωτογραφίες αυτοκινήτων
                 car_image = random.choice(self.car_images[str(direction)])

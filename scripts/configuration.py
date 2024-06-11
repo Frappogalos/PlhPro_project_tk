@@ -67,5 +67,5 @@ pause_params = {"pos": (1200, 50), "img": "../images/buttons/pause_btn.png"}
 op_btn_params = {"pos": (1300, 50),
                  "images": ("../images/buttons/on_off_grn.png", "../images/buttons/on_off_red.png")}
 
-# Κουμπί ελέγχου ταχύτητας οχημάτων
-car_spinbox = {"pos": (1450, 80)}
+# Κουμπί ρυθμίσεων
+settings_btn = {"pos": (1600, 50)}
