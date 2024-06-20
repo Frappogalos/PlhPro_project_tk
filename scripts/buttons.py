@@ -94,17 +94,20 @@ class SettingsBtn:
         # Δημιουργία ετικέτας
         speed_label_txt = (f"Ταχύτητα οχημάτων\n{self.cars_params['cars_speed_range'][0]} - "
                            f"{self.cars_params['cars_speed_range'][1]}")
-        speed_label = tk.Label(win, text=speed_label_txt, bg="lightblue", font=("Arial", 16, "bold"), relief=tk.RAISED)
+        speed_label = tk.Label(win, text=speed_label_txt, bg="lightblue",
+                               font=("Arial", 16, "bold"), relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
         speed_label.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία ετικέτας
         limit_label_txt = "Όριο οχημάτων\n1 - 50"
-        limit_label = tk.Label(win, text=limit_label_txt, bg="lightblue", font=("Arial", 16, "bold"), relief=tk.RAISED)
+        limit_label = tk.Label(win, text=limit_label_txt, bg="lightblue",
+                               font=("Arial", 16, "bold"), relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
         limit_label.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
         # Δημιουργία ετικέτας
         density_label_txt = "Πυκνότητα κυκλοφορίας\n1 - 7"
-        density_label = tk.Label(win, text=density_label_txt, bg="lightblue", font=("Arial", 16, "bold"),
+        density_label = tk.Label(win, text=density_label_txt, bg="lightblue",
+                                 font=("Arial", 16, "bold"),
                                  relief=tk.RAISED)
         # Τοποθέτηση της ετικέτας στον καμβά
         density_label.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
@@ -112,9 +115,9 @@ class SettingsBtn:
         # της ταχύτητας των οχημάτων
         self.speed_spinbox = tk.Spinbox(win, from_=self.cars_params["cars_speed_range"][0],
                                         to=self.cars_params["cars_speed_range"][1],
-                                        textvariable=tk.DoubleVar(value=self.cars_params["default_car_speed"]), width=10,
-                                        relief="sunken", repeatdelay=500, repeatinterval=100, font=("Arial", 12),
-                                        bg="lightgrey", fg="blue", command=self.change_speed)
+                                        textvariable=tk.DoubleVar(value=self.cars_params["default_car_speed"]),
+                                        width=10, relief="sunken", repeatdelay=500, repeatinterval=100,
+                                        font=("Arial", 12), bg="lightgrey", fg="blue", command=self.change_speed)
         self.speed_spinbox.config(state="normal", cursor="hand2", bd=3, justify="center", wrap=True)
         # Τοποθέτηση του γραφικού στοιχείου στον καμβά
         self.speed_spinbox.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))

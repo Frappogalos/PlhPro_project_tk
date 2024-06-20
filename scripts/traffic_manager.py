@@ -129,8 +129,9 @@ class TrafficManager:
                 car_image = random.choice(self.car_images[str(direction)])
                 # Δημιουργία καινούριου αυτοκινήτου
                 new_car = Car(image=car_image, direction=direction, speed=self.car_speed, lane=lane,
-                              params=self.car_params, canvas=self.canvas, window=self.root, lights=self.lights,
-                              total_car_list=self.total_car_list, cars_dict=self.cars_dict)
+                              params=self.car_params, canvas=self.canvas, window=self.root,
+                              lights=self.lights, total_car_list=self.total_car_list,
+                              cars_dict=self.cars_dict)
                 #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή του
                 #  και τη λωρίδα κυκλοφορίας
                 self.cars_dict[str(new_car.direction)][new_car.lane].append(new_car)
@@ -223,8 +224,9 @@ class TrafficManager:
                 # Τυχαία επιλογή φωτογραφίας πεζού
                 ped_image = random.choice(list(self.ped_images[str(direction)].values()))
                 # Δημιουργία καινούριας οντότητας πεζού
-                new_ped = Pedestrian(image=ped_image, direction=direction, lane=lane, params=self.ped_params, canvas=self.canvas,
-                                     window=self.root, lights=self.lights, total_ped_list=self.total_ped_list,
+                new_ped = Pedestrian(image=ped_image, direction=direction, lane=lane,
+                                     params=self.ped_params, canvas=self.canvas, window=self.root,
+                                     lights=self.lights, total_ped_list=self.total_ped_list,
                                      ped_dict=self.ped_dict, cars_dict=self.cars_dict)
                 #  Καταχώριση του αντικειμένου στο λεξικό ανάλογα με την κατεύθυνσή
                 #  του και τη θέση εκκίνησής του
