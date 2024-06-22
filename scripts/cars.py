@@ -97,7 +97,7 @@ class Car:
                 # προκειμένου να ξεκινήσει πάλι η κίνησή του όταν αυτή αλλάξει
                 stop_to_light = True
                 self.stopped[str(type(light))] = light
-            elif (self.lights.current_mode == "night" and self.direction == 2 and not self.leave_on_orange and
+            elif (self.lights.current_mode == "night" and self.direction % 2 == 0 and not self.leave_on_orange and
                   self.find_distance(light) < self.dist_to_light[1] * 1.5 and
                   self.dist_to_light[0] < self.axis_distance(light) < self.dist_to_light[1]):
                 stop_to_light = True
